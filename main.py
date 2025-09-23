@@ -12,7 +12,7 @@ class Main:
 
     def run(self):
         while True:
-            self.window.fill(Color.BLACK.value)
+            self.window.fill(Color.BLACK)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
