@@ -2,6 +2,7 @@ import sys
 import pygame
 
 from settings import *
+from stock import Stock
 
 
 class Button:
@@ -27,10 +28,18 @@ class Main:
         self.window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Stock Sim")
 
+        self.stock = Stock("FTSE100", 20, 1000)
+        self.day = 0
+
         self.buttons = [
-            Button(100, 100, 100, 100, "red", lambda: print("I am red")),
-            Button(300, 100, 100, 100, "blue", lambda: print("I am blue"))
+            Button(20, 540, 60, 40, "red", lambda: self.stock.change_value(1)),
+            Button(100, 540, 60, 40, "blue", lambda: self.stock.change_value(-1)),
+            Button(180, 540, 60, 40, "green", self.tick)
         ]
+
+    def tick(self):
+        self.stock.update_historic_price(self.day)
+        self.day += 1
 
     def handle_mouse(self) -> None:
         mx, my = pygame.mouse.get_pos()
@@ -38,9 +47,9 @@ class Main:
         for button in self.buttons:
             if button.rect.collidepoint(mx, my):
                 button.func()
+                break
 
-
-    def run(self):
+    def run(self) -> None:
         while True:
             self.window.fill(Color.BLACK)
 
@@ -55,7 +64,6 @@ class Main:
                 pygame.draw.rect(self.window, button.color, button.rect)
 
             pygame.display.flip()
-
 
 
 if __name__ == '__main__':
