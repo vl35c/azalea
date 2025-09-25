@@ -41,6 +41,26 @@ class Main:
         self.stock.update_historic_price(self.day)
         self.day += 1
 
+    def draw_chart(self):
+        for day in range(self.day):
+            change = self.stock.historic_price[day] - self.stock.historic_price[day - 1]
+
+            height = change / (self.stock.stock_ceiling - self.stock.stock_floor) * 200
+            width = 8
+            x = 20 + day * 10
+            y = self.stock.historic_price[day - 1] / (self.stock.stock_ceiling - self.stock.stock_floor) * 200 + 100
+            color = "green"
+
+            if change < 0:
+                color = "red"
+                height *= -1
+                y -= height
+
+            pygame.draw.rect(
+                self.window,
+                color,
+                (x, y, width, height))
+
     def handle_mouse(self) -> None:
         mx, my = pygame.mouse.get_pos()
 
@@ -62,6 +82,8 @@ class Main:
 
             for button in self.buttons:
                 pygame.draw.rect(self.window, button.color, button.rect)
+
+            self.draw_chart()
 
             pygame.display.flip()
 
