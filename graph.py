@@ -14,14 +14,26 @@ class Graph:
     def rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
-    def draw(self, day: int, prices: dict[int: tuple[float]]) -> None:
+    def draw(self, stock_data) -> None:
         pygame.draw.rect(self.window, "white", self.rect)
-        self.candle(day, prices)
+        self.candle(stock_data)
 
-    def candle(self, day: int, prices: dict[int: tuple[float]]) -> None:
-        for d in range(day):
-            top = self.map(10, 40, self.y + self.height, self.y, prices[d][0])
-            bottom = self.map(10, 40, self.y + self.height, self.y, prices[d - 1][0])
+    def candle(self, stock_data) -> None:
+        for d in range(stock_data.day):
+            top = self.map(
+                stock_data.stock.stock_floor,
+                stock_data.stock.stock_ceiling,
+                self.y + self.height,
+                self.y,
+                stock_data.stock.historic_price[d][0]
+            )
+            bottom = self.map(
+                stock_data.stock.stock_floor,
+                stock_data.stock.stock_ceiling,
+                self.y + self.height,
+                self.y,
+                stock_data.stock.historic_price[d - 1][0]
+            )
             color = "green"
 
             if bottom < top:

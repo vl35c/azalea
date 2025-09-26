@@ -23,6 +23,12 @@ class Button:
         return self.func()
 
 
+class StockData:
+    def __init__(self, day: int, s: Stock):
+        self.day = day
+        self.stock = s
+
+
 class Main:
     def __init__(self):
         pygame.init()
@@ -40,29 +46,11 @@ class Main:
 
         self.graph = Graph(20, 100, 760, 200)
 
+        self.stock_data = StockData(self.day, self.stock)
+
     def tick(self):
         self.stock.update_historic_price(self.day)
         self.day += 1
-
-    def draw_chart(self):
-        for day in range(self.day):
-            change = self.stock.historic_price[day][0] - self.stock.historic_price[day - 1][0]
-
-            height = change / (self.stock.stock_ceiling - self.stock.stock_floor) * 200
-            width = 8
-            x = 20 + day * 10
-            y = self.stock.historic_price[day - 1][0] / (self.stock.stock_ceiling - self.stock.stock_floor) * 200 + 100
-            color = "green"
-
-            if change < 0:
-                color = "red"
-                height *= -1
-                y -= height
-
-            pygame.draw.rect(
-                self.window,
-                color,
-                (x, y, width, height))
 
     def handle_mouse(self) -> None:
         mx, my = pygame.mouse.get_pos()
@@ -91,8 +79,6 @@ class Main:
             text_surface = my_font.render(f'Stock Price: {self.stock.share_value}', True, (255, 255, 255))
             self.window.blit(text_surface, (100, 0))
 
-
-
             for button in self.buttons:
                 pygame.draw.rect(self.window, button.color, button.rect)
 
@@ -105,8 +91,7 @@ class Main:
             text_surface = my_font.render('tick', True, (255, 255, 255))
             self.window.blit(text_surface, (190, 550))
 
-            self.graph.draw(self.day, self.stock.historic_price)
-            #self.draw_chart()
+            self.graph.draw(self.stock_data)
 
             pygame.display.flip()
 
