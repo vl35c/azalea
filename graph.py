@@ -1,5 +1,7 @@
 import pygame
 
+from settings import *
+
 
 class Graph:
     def __init__(self, x: int, y: int, width: int, height: int) -> None:
@@ -40,7 +42,7 @@ class Graph:
                 top, bottom = bottom, top
                 color = "red"
 
-            rect = pygame.Rect(20 + d * 10, top, 8, bottom - top)
+            rect = pygame.Rect(GRAPH_X + d * 10, top, 8, bottom - top)
 
             pygame.draw.rect(self.window, color, rect)
 

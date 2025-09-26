@@ -4,3 +4,7 @@ SCREEN_HEIGHT = 600
 
 class Color:
     BLACK = "#16161d"
+
+
+GRAPH_X = 60
+GRAPH_WIDTH = SCREEN_WIDTH - 120

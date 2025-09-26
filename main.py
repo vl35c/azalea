@@ -44,7 +44,7 @@ class Main:
             Button(180, 540, 60, 40, "aquamarine4", self.tick)
         ]
 
-        self.graph = Graph(20, 100, 760, 200)
+        self.graph = Graph(GRAPH_X, 100, GRAPH_WIDTH, 200)
 
         self.stock_data = StockData(self.day, self.stock)
 
