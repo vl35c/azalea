@@ -43,12 +43,12 @@ class Main:
 
     def draw_chart(self):
         for day in range(self.day):
-            change = self.stock.historic_price[day] - self.stock.historic_price[day - 1]
+            change = self.stock.historic_price[day][0] - self.stock.historic_price[day - 1][0]
 
             height = change / (self.stock.stock_ceiling - self.stock.stock_floor) * 200
             width = 8
             x = 20 + day * 10
-            y = self.stock.historic_price[day - 1] / (self.stock.stock_ceiling - self.stock.stock_floor) * 200 + 100
+            y = self.stock.historic_price[day - 1][0] / (self.stock.stock_ceiling - self.stock.stock_floor) * 200 + 100
             color = "green"
 
             if change < 0:
