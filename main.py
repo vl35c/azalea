@@ -32,9 +32,9 @@ class Main:
         self.day = 0
 
         self.buttons = [
-            Button(20, 540, 60, 40, "red", lambda: self.stock.change_value(1)),
-            Button(100, 540, 60, 40, "blue", lambda: self.stock.change_value(-1)),
-            Button(180, 540, 60, 40, "green", self.tick)
+            Button(20, 540, 60, 40, "crimson", lambda: self.stock.change_value(1)),
+            Button(100, 540, 60, 40, "cadetblue4", lambda: self.stock.change_value(-1)),
+            Button(180, 540, 60, 40, "aquamarine4", self.tick)
         ]
 
     def tick(self):
@@ -80,8 +80,27 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_mouse()
 
+            pygame.font.init()
+            my_font = pygame.font.SysFont("monospace", 15, True)
+            text_surface = my_font.render(f'Day: {self.day}', True, (255, 255, 255))
+            self.window.blit(text_surface, (0,0))
+
+            text_surface = my_font.render(f'Stock Price: {self.stock.share_value}', True, (255, 255, 255))
+            self.window.blit(text_surface, (100, 0))
+
+
+
             for button in self.buttons:
                 pygame.draw.rect(self.window, button.color, button.rect)
+
+            text_surface = my_font.render('inc', True, (255, 255, 255))
+            self.window.blit(text_surface, (30, 550))
+
+            text_surface = my_font.render('dec', True, (255, 255, 255))
+            self.window.blit(text_surface, (110, 550))
+
+            text_surface = my_font.render('tick', True, (255, 255, 255))
+            self.window.blit(text_surface, (190, 550))
 
             self.draw_chart()
 
