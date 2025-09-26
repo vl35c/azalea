@@ -51,6 +51,7 @@ class Main:
     def tick(self):
         self.stock.update_historic_price(self.day)
         self.day += 1
+        self.stock_data.day += 1
 
     def handle_mouse(self) -> None:
         mx, my = pygame.mouse.get_pos()
