@@ -20,3 +20,5 @@ class Stock:
 
     def update_historic_price(self, date: int):
         self.historic_price[date] = (self.share_value, self.current_low_day, self.current_high_day)
+        self.current_low_day = self.share_value
+        self.current_high_day = self.share_value
