@@ -3,6 +3,7 @@ import pygame
 
 from settings import *
 from stock import Stock
+from graph import Graph
 
 
 class Button:
@@ -36,6 +37,8 @@ class Main:
             Button(100, 540, 60, 40, "cadetblue4", lambda: self.stock.change_value(-1)),
             Button(180, 540, 60, 40, "aquamarine4", self.tick)
         ]
+
+        self.graph = Graph(20, 100, 760, 200)
 
     def tick(self):
         self.stock.update_historic_price(self.day)
@@ -102,7 +105,8 @@ class Main:
             text_surface = my_font.render('tick', True, (255, 255, 255))
             self.window.blit(text_surface, (190, 550))
 
-            self.draw_chart()
+            self.graph.draw(self.day, self.stock.historic_price)
+            #self.draw_chart()
 
             pygame.display.flip()
 
