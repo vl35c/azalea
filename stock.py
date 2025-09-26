@@ -1,3 +1,6 @@
+from settings import *
+
+
 class Stock:
     def __init__(self, name: str, share_value: float, total_shares: int):
         self.name = name
@@ -18,17 +21,23 @@ class Stock:
     def change_value(self, value: float):
         self.share_value += value
 
+        if self.share_value < 0:
+            self.share_value = 0
+
         if self.share_value > self.current_high_day: self.current_high_day = self.share_value
         elif self.share_value < self.current_low_day: self.current_low_day = self.share_value
 
         if self.current_high_day > self.all_time_high_day: self.all_time_high_day = self.current_high_day
-        elif self.current_low_day > self.all_time_low_day: self.all_time_low_day = self.current_low_day
+        elif self.current_low_day < self.all_time_low_day: self.all_time_low_day = self.current_low_day
 
     def update_historic_price(self, date: int):
         self.historic_price[date] = DayShare(self.share_value, self.current_low_day, self.current_high_day)
 
         self.current_low_day = self.share_value
         self.current_high_day = self.share_value
+
+        self.stock_ceiling = int(self.all_time_high_day * HIGH_FACTOR)
+        self.stock_floor = int(self.all_time_low_day * LOW_FACTOR)
 
 
 class DayShare:
