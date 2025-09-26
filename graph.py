@@ -25,14 +25,14 @@ class Graph:
                 stock_data.stock.stock_ceiling,
                 self.y + self.height,
                 self.y,
-                stock_data.stock.historic_price[d][0]
+                stock_data.stock.historic_price[d].value
             )
             bottom = self.map(
                 stock_data.stock.stock_floor,
                 stock_data.stock.stock_ceiling,
                 self.y + self.height,
                 self.y,
-                stock_data.stock.historic_price[d - 1][0]
+                stock_data.stock.historic_price[d - 1].value
             )
             color = "green"
 

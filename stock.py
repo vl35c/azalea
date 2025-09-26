@@ -3,7 +3,7 @@ class Stock:
         self.name = name
         self.share_value = share_value
         self.total_shares = total_shares
-        self.historic_price: dict[int: tuple] = {-1: (share_value, share_value, share_value)}  # key: date, value: (closing, low, high)
+        self.historic_price: dict[int: DayShare] = {-1: DayShare(share_value, share_value, share_value)}  # key: date, value: (closing, low, high)
 
         self.stock_floor: int = int(share_value / 2)
         self.stock_ceiling: int = int(share_value * 2)
@@ -19,6 +19,13 @@ class Stock:
         elif self.share_value < self.current_low_day: self.current_low_day = self.share_value
 
     def update_historic_price(self, date: int):
-        self.historic_price[date] = (self.share_value, self.current_low_day, self.current_high_day)
+        self.historic_price[date] = DayShare(self.share_value, self.current_low_day, self.current_high_day)
         self.current_low_day = self.share_value
         self.current_high_day = self.share_value
+
+
+class DayShare:
+    def __init__(self, value: float, low: float, high: float):
+        self.value = value
+        self.low = low
+        self.high = high
