@@ -49,7 +49,7 @@ class Main:
         self.stock_data = StockData(self.day, self.stock)
 
     def tick(self):
-        self.stock.update_historic_price(self.day)
+        self.stock.update_price_record(self.day)
         self.day += 1
         self.stock_data.day += 1
 

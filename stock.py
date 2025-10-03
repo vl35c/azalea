@@ -6,16 +6,13 @@ class Stock:
         self.name = name
         self.share_value = share_value
         self.total_shares = total_shares
-        self.historic_price: dict[int: DayShare] = {-1: DayShare(share_value, share_value, share_value)}  # key: date, value: (closing, low, high)
+        self.historic_price: dict[int: ShareData] = {-1: ShareData.from_value(share_value)}  # key: date, value: (closing, low, high)
 
-        self.stock_floor: int = int(share_value / 2)
-        self.stock_ceiling: int = int(share_value * 2)
+        self.bound: ShareData = ShareData.from_high_low(int(share_value / 2), int(share_value * 2))
 
-        self.current_high_day: float = share_value
-        self.current_low_day: float = share_value
+        self.current_day: ShareData = ShareData.from_value(share_value)
 
-        self.all_time_high_day: float = share_value
-        self.all_time_low_day: float = share_value
+        self.all_time: ShareData = ShareData.from_value(share_value)
 
     # changes a stocks value
     def change_value(self, value: float):
@@ -24,24 +21,47 @@ class Stock:
         if self.share_value < 0:
             self.share_value = 0
 
-        if self.share_value > self.current_high_day: self.current_high_day = self.share_value
-        elif self.share_value < self.current_low_day: self.current_low_day = self.share_value
+        self.current_day.greater_swap(self.share_value) # sets current_day.high to share_value if share_value is greater
+        self.current_day.lesser_swap(self.share_value)
 
-        if self.current_high_day > self.all_time_high_day: self.all_time_high_day = self.current_high_day
-        elif self.current_low_day < self.all_time_low_day: self.all_time_low_day = self.current_low_day
+        self.all_time.greater_swap(self.current_day.high)
+        self.all_time.lesser_swap(self.current_day.low)
 
-    def update_historic_price(self, date: int):
-        self.historic_price[date] = DayShare(self.share_value, self.current_low_day, self.current_high_day)
+    def update_price_record(self, date: int):
+        self.historic_price[date] = ShareData.from_full(self.share_value, self.current_day.low, self.current_day.high)
 
-        self.current_low_day = self.share_value
-        self.current_high_day = self.share_value
+        self.current_day.low = self.share_value
+        self.current_day.high = self.share_value
 
-        self.stock_ceiling = int(self.all_time_high_day * HIGH_FACTOR)
-        self.stock_floor = int(self.all_time_low_day * LOW_FACTOR)
+        self.bound.ceiling = int(self.all_time.high * HIGH_FACTOR)
+        self.bound.floor = int(self.all_time.low * LOW_FACTOR)
 
 
-class DayShare:
+class ShareData:
     def __init__(self, value: float, low: float, high: float):
         self.value = value
         self.low = low
         self.high = high
+        self.ceiling = high
+        self.floor = low
+
+    @classmethod
+    def from_value(cls, value: float):
+        return cls(value, value, value)
+
+    @classmethod
+    def from_full(cls, value: float, low: float, high: float):
+        return cls(value, low, high)
+
+    @classmethod
+    def from_high_low(cls, low: float, high: float):
+        return cls(-1, low, high)
+
+
+    def greater_swap(self, other: float):
+        if self.high < other:
+            self.high = other
+
+    def lesser_swap(self, other: float):
+        if self.low > other:
+            self.low = other
