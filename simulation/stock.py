@@ -15,7 +15,7 @@ class Stock:
         self.all_time: ShareData = ShareData.from_value(share_value)
 
     # changes a stocks value
-    def change_value(self, value: float) -> None:
+    def change_value(self, value: float):
         self.share_value += value
 
         if self.share_value < 0:
@@ -27,7 +27,7 @@ class Stock:
         self.all_time.greater_swap(self.current_day.high)
         self.all_time.lesser_swap(self.current_day.low)
 
-    def update_price_record(self, date: int) -> None:
+    def update_price_record(self, date: int):
         self.historic_price[date] = ShareData.from_full(self.share_value, self.current_day.low, self.current_day.high)
 
         self.current_day.low = self.share_value
@@ -42,8 +42,8 @@ class ShareData:
         self.value = value
         self.low = low
         self.high = high
-        self.ceiling: float = high
-        self.floor: float = low
+        self.ceiling = high
+        self.floor = low
 
     @classmethod
     def from_value(cls, value: float):
@@ -58,10 +58,10 @@ class ShareData:
         return cls(-1, low, high)
 
 
-    def greater_swap(self, other: float) -> None:
+    def greater_swap(self, other: float):
         if self.high < other:
             self.high = other
 
-    def lesser_swap(self, other: float) -> None:
+    def lesser_swap(self, other: float):
         if self.low > other:
             self.low = other

@@ -1,7 +1,7 @@
 import pygame
 
 from settings import *
-from font import Font
+from render.font import Font
 
 
 class Button:

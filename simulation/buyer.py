@@ -1,4 +1,4 @@
-from stock import Stock
+from simulation.stock import Stock
 
 
 class Buyer:

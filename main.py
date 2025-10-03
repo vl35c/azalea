@@ -2,10 +2,10 @@ import sys
 import pygame
 
 from settings import *
-from stock import Stock
-from graph import Graph
-from font import Font
-from button import Button
+from simulation.stock import Stock
+from render.graph import Graph
+from render.font import Font
+from render.button import Button
 
 
 class StockData:
