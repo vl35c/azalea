@@ -21,7 +21,11 @@ class Graph:
         self.candle(stock_data)
 
     def candle(self, stock_data) -> None:
-        for d in range(stock_data.day):
+        max_candles = int(GRAPH_WIDTH / CANDLE_SPACING)
+        offset = stock_data.day - max_candles if stock_data.day > max_candles else 0
+
+        for d in range(min(stock_data.day, max_candles)):
+            d += offset
             # closing price
             top = self.map(
                 stock_data.stock.bound.floor,
@@ -62,9 +66,12 @@ class Graph:
                 stock_data.stock.historic_price[d].low
             )
 
+            # remove offset for placing on graph
+            d -= offset
+
             rect = pygame.Rect(GRAPH_X + d * CANDLE_SPACING, top, CANDLE_WIDTH, bottom - top)
-            high = (GRAPH_X + d * 10 + 3, high)
-            low = (GRAPH_X + d * 10 + 3, low)
+            high = (GRAPH_X + d * CANDLE_SPACING + (CANDLE_WIDTH - 2) / 2, high)
+            low = (GRAPH_X + d * CANDLE_SPACING + (CANDLE_WIDTH - 2) / 2, low)
 
             pygame.draw.rect(self.window, color, rect)
             pygame.draw.line(self.window, color, high, low, CANDLE_LINE_WIDTH)
@@ -73,7 +80,7 @@ class Graph:
     def map(min_value: int, max_value: int, min_y: int, max_y: int, value: int) -> int:
         height = max_y - min_y  # height of the graph
         diff = max_value - min_value  # difference in stock price
-        unit = abs(int(height / diff))  # how big 1 unit should be
+        unit = abs(height / diff)  # how big 1 unit should be
         position = min_y - (value - min_value) * unit  # mapped position to graph
 
         return position

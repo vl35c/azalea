@@ -3,6 +3,7 @@ import pygame
 
 from settings import *
 from simulation.stock import Stock
+from simulation.variance import Variance
 from render.graph import Graph
 from render.font import Font
 from render.button import Button
@@ -37,8 +38,13 @@ class Main:
         self.stock_data = StockData(self.day, self.stock)
 
         self.font = Font()
+        self.variance = Variance()
 
     def tick(self) -> None:
+        for i in range(24):
+            change = self.variance.iterate()
+            self.stock.set_value(change)
+
         self.stock.update_price_record(self.day)
         self.day += 1
         self.stock_data.day += 1
@@ -63,7 +69,7 @@ class Main:
                     self.handle_mouse()
 
             self.font.render(f'Day: {self.day}', True, (255, 255, 255), (0, 0))
-            self.font.render(f'Stock Price: {self.stock.share_value}', True, (255, 255, 255), (100, 0))
+            self.font.render(f'Stock Price: {self.stock.share_value:.2f}', True, (255, 255, 255), (100, 0))
 
             for button in self.buttons:
                 button.draw()

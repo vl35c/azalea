@@ -17,17 +17,26 @@ class Stock:
         # all time stores the all-time highs and lows
         self.all_time: ShareData = ShareData.from_value(share_value)
 
-    # changes a stocks value
-    def change_value(self, value: float) -> None:
-        self.share_value += value
-
-        self.share_value = max(self.share_value, 0)
-
+    def store_value_data(self) -> None:
         self.current_day.greater_swap(self.share_value)
         self.current_day.lesser_swap(self.share_value)
 
         self.all_time.greater_swap(self.current_day.high)
         self.all_time.lesser_swap(self.current_day.low)
+
+    # changes a stocks value
+    def change_value(self, value: float) -> None:
+        self.share_value *= value
+        self.share_value = max(self.share_value, 0.01)
+
+        self.store_value_data()
+
+    # sets a stocks value
+    def set_value(self, value: float) -> None:
+        self.share_value = value
+        self.share_value = max(self.share_value, 0.01)
+
+        self.store_value_data()
 
     def update_price_record(self, date: int) -> None:
         self.historic_price[date] = ShareData.from_full(self.share_value, self.current_day.low, self.current_day.high)
