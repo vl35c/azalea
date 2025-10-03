@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7874d1f4-0940-40d4-ad5b-d1823679b92c" name="Changes" comment="refactored Button into own class, created custom Font class">
-      <change beforePath="$PROJECT_DIR$/button.py" beforeDir="false" afterPath="$PROJECT_DIR$/render/button.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/buyer.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/buyer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/font.py" beforeDir="false" afterPath="$PROJECT_DIR$/render/font.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/render/graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stock.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/stock.py" afterDir="false" />
+    <list default="true" id="7874d1f4-0940-40d4-ad5b-d1823679b92c" name="Changes" comment="refactored modules into packages">
+      <change afterPath="$PROJECT_DIR$/simulation/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +66,12 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/simulation" />
+      <recent name="$PROJECT_DIR$/render" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="stock-sim" />
@@ -187,7 +189,15 @@
       <option name="project" value="LOCAL" />
       <updated>1759494155639</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="refactored modules into packages">
+      <option name="closed" value="true" />
+      <created>1759494482318</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1759494482318</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -213,7 +223,8 @@
     <MESSAGE value="added graph function and mapped candle chart to go the correct way" />
     <MESSAGE value="Replaced closing, low, high tuple to DayShare class" />
     <MESSAGE value="refactored Button into own class, created custom Font class" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored Button into own class, created custom Font class" />
+    <MESSAGE value="refactored modules into packages" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored modules into packages" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/stock_sim$stock.coverage" NAME="stock Coverage Results" MODIFIED="1758887670486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
