@@ -4,23 +4,8 @@ import pygame
 from settings import *
 from stock import Stock
 from graph import Graph
-
-
-class Button:
-    def __init__(self, x, y, width, height, color, func=lambda: None):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.color = color
-        self.func = func
-
-    @property
-    def rect(self) -> pygame.Rect:
-        return pygame.Rect(self.x, self.y, self.width, self.height)
-
-    def func(self) -> ():
-        return self.func()
+from font import Font
+from button import Button
 
 
 class StockData:
@@ -39,14 +24,19 @@ class Main:
         self.day = 0
 
         self.buttons = [
-            Button(20, 540, 60, 40, Color.RED, lambda: self.stock.change_value(1)),
-            Button(100, 540, 60, 40, Color.BLUE, lambda: self.stock.change_value(-1)),
-            Button(180, 540, 60, 40, Color.AQUAMARINE, self.tick)
+            Button(20, 540, 60, 40, Color.RED, text="inc",
+                   func=lambda: self.stock.change_value(1)),
+            Button(100, 540, 60, 40, Color.BLUE, text="dec",
+                   func=lambda: self.stock.change_value(-1)),
+            Button(180, 540, 60, 40, Color.AQUAMARINE, text="tick",
+                   func=self.tick)
         ]
 
         self.graph = Graph(GRAPH_X, 100, GRAPH_WIDTH, 200)
 
         self.stock_data = StockData(self.day, self.stock)
+
+        self.font = Font()
 
     def tick(self):
         self.stock.update_price_record(self.day)
@@ -72,25 +62,12 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_mouse()
 
-            pygame.font.init()
-            my_font = pygame.font.SysFont("monospace", 15, True)
-            text_surface = my_font.render(f'Day: {self.day}', True, (255, 255, 255))
-            self.window.blit(text_surface, (0,0))
-
-            text_surface = my_font.render(f'Stock Price: {self.stock.share_value}', True, (255, 255, 255))
-            self.window.blit(text_surface, (100, 0))
+            self.font.render(f'Day: {self.day}', True, (255, 255, 255), (0, 0))
+            self.font.render(f'Stock Price: {self.stock.share_value}', True, (255, 255, 255), (100, 0))
 
             for button in self.buttons:
-                pygame.draw.rect(self.window, button.color, button.rect)
-
-            text_surface = my_font.render('inc', True, (255, 255, 255))
-            self.window.blit(text_surface, (30, 550))
-
-            text_surface = my_font.render('dec', True, (255, 255, 255))
-            self.window.blit(text_surface, (110, 550))
-
-            text_surface = my_font.render('tick', True, (255, 255, 255))
-            self.window.blit(text_surface, (190, 550))
+                button.draw()
+                button.render()
 
             self.graph.draw(self.stock_data)
 
