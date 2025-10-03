@@ -9,9 +9,9 @@ from render.button import Button
 
 
 class StockData:
-    def __init__(self, day: int, s: Stock):
+    def __init__(self, day: int, stock: Stock):
         self.day = day
-        self.stock = s
+        self.stock = stock
 
 
 class Main:
@@ -32,13 +32,13 @@ class Main:
                    func=self.tick)
         ]
 
-        self.graph = Graph(GRAPH_X, 100, GRAPH_WIDTH, 200)
+        self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT)
 
         self.stock_data = StockData(self.day, self.stock)
 
         self.font = Font()
 
-    def tick(self):
+    def tick(self) -> None:
         self.stock.update_price_record(self.day)
         self.day += 1
         self.stock_data.day += 1

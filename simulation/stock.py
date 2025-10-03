@@ -1,4 +1,5 @@
 from settings import *
+from typing import Self
 
 
 class Stock:
@@ -6,28 +7,29 @@ class Stock:
         self.name = name
         self.share_value = share_value
         self.total_shares = total_shares
-        self.historic_price: dict[int: ShareData] = {-1: ShareData.from_value(share_value)}  # key: date, value: (closing, low, high)
-
+        # key: date, value: (closing, low, high)
+        # also uses day -1 to start simulation with a value
+        self.historic_price: dict[int: ShareData] = {-1: ShareData.from_value(share_value)}
+        # bound stores the ceiling and floor values for the graph to contain the values
         self.bound: ShareData = ShareData.from_high_low(int(share_value / 2), int(share_value * 2))
-
+        # current day stores the daily highs and lows
         self.current_day: ShareData = ShareData.from_value(share_value)
-
+        # all time stores the all-time highs and lows
         self.all_time: ShareData = ShareData.from_value(share_value)
 
     # changes a stocks value
-    def change_value(self, value: float):
+    def change_value(self, value: float) -> None:
         self.share_value += value
 
-        if self.share_value < 0:
-            self.share_value = 0
+        self.share_value = max(self.share_value, 0)
 
-        self.current_day.greater_swap(self.share_value) # sets current_day.high to share_value if share_value is greater
+        self.current_day.greater_swap(self.share_value)
         self.current_day.lesser_swap(self.share_value)
 
         self.all_time.greater_swap(self.current_day.high)
         self.all_time.lesser_swap(self.current_day.low)
 
-    def update_price_record(self, date: int):
+    def update_price_record(self, date: int) -> None:
         self.historic_price[date] = ShareData.from_full(self.share_value, self.current_day.low, self.current_day.high)
 
         self.current_day.low = self.share_value
@@ -46,22 +48,23 @@ class ShareData:
         self.floor = low
 
     @classmethod
-    def from_value(cls, value: float):
+    def from_value(cls, value: float) -> Self:
         return cls(value, value, value)
 
     @classmethod
-    def from_full(cls, value: float, low: float, high: float):
+    def from_full(cls, value: float, low: float, high: float) -> Self:
         return cls(value, low, high)
 
     @classmethod
-    def from_high_low(cls, low: float, high: float):
+    def from_high_low(cls, low: float, high: float) -> Self:
         return cls(-1, low, high)
 
+    # evaluate and swap if greater
+    def greater_swap(self, value: float) -> None:
+        if value > self.high:
+            self.high = value
 
-    def greater_swap(self, other: float):
-        if self.high < other:
-            self.high = other
-
-    def lesser_swap(self, other: float):
-        if self.low > other:
-            self.low = other
+    # evaluate and swap if less
+    def lesser_swap(self, value: float) -> None:
+        if value < self.low:
+            self.low = value
