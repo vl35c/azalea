@@ -39,9 +39,9 @@ class Main:
         self.day = 0
 
         self.buttons = [
-            Button(20, 540, 60, 40, "crimson", lambda: self.stock.change_value(1)),
-            Button(100, 540, 60, 40, "cadetblue4", lambda: self.stock.change_value(-1)),
-            Button(180, 540, 60, 40, "aquamarine4", self.tick)
+            Button(20, 540, 60, 40, Color.RED, lambda: self.stock.change_value(1)),
+            Button(100, 540, 60, 40, Color.BLUE, lambda: self.stock.change_value(-1)),
+            Button(180, 540, 60, 40, Color.AQUAMARINE, self.tick)
         ]
 
         self.graph = Graph(GRAPH_X, 100, GRAPH_WIDTH, 200)
