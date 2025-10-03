@@ -4,11 +4,11 @@ SCREEN_HEIGHT = 600
 
 class Color:
     BLACK = "#16161d"
-    GREEN = "chartreuse3"
-    RED = "crimson"
-    AQUAMARINE = "aquamarine4"
-    BLUE = "cadetblue4"
-    WHITE = "floralwhite"
+    GREEN = "#66cd00"
+    RED = "#dc143c"
+    AQUAMARINE = "#458b74"
+    BLUE = "#53868b"
+    WHITE = "#fffaf0"
 
 
 GRAPH_X = 60
