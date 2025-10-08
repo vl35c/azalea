@@ -1,6 +1,7 @@
 import pygame
 
 from settings import *
+from render.font import Font
 
 
 class Graph:
@@ -11,13 +12,16 @@ class Graph:
         self.height = height
 
         self.window = pygame.display.get_surface()
+        self.font = Font()
 
     @property
     def rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
-    def draw(self, stock_data) -> None:
+    def draw_base(self) -> None:
         pygame.draw.rect(self.window, Color.WHITE, self.rect, 0, GRAPH_CORNER_ROUNDING)
+
+    def draw_data(self, stock_data) -> None:
         self.candle(stock_data)
 
     def candle(self, stock_data) -> None:
@@ -76,6 +80,37 @@ class Graph:
             pygame.draw.rect(self.window, color, rect)
             pygame.draw.line(self.window, color, high, low, CANDLE_LINE_WIDTH)
 
+    # draws a background behind a candle to indicate which one is hovered
+    def highlight_candle(self, position: int) -> None:
+        x = GRAPH_X + position * CANDLE_SPACING
+        y = GRAPH_Y
+        width = CANDLE_WIDTH
+        height = GRAPH_HEIGHT
+
+        rect = pygame.Rect(x, y, width, height)
+        pygame.draw.rect(self.window, Color.GREY, rect)
+
+    def candle_data(self, day: int, stock_data) -> None:
+        closing_price = stock_data.stock.historic_price[day].value
+        day_low = stock_data.stock.historic_price[day].low
+        day_high = stock_data.stock.historic_price[day].high
+
+        self.font.render(f"Closing Price: {closing_price:.2f}", True, (255, 255, 255), (0, 40))
+        self.font.render(f"High: {day_low:.2f}", True, (255, 255, 255), (0, 60))
+        self.font.render(f"Low: {day_high:.2f}", True, (255, 255, 255), (0, 80))
+
+    def hover(self, stock_data) -> None:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if not self.rect.collidepoint(mouse_x, mouse_y):
+            return
+
+        # map mouse so that top corner of graph is (0,0)
+        x, y = mouse_x - GRAPH_X, mouse_y - GRAPH_Y
+        candle = x // CANDLE_SPACING
+
+        self.highlight_candle(candle)
+        self.candle_data(candle, stock_data)
+
     @staticmethod
     def map(min_value: int, max_value: int, min_y: int, max_y: int, value: int) -> int:
         height = max_y - min_y  # height of the graph
@@ -83,10 +118,10 @@ class Graph:
         unit = abs(height / diff)  # how big 1 unit should be
         position = min_y - (value - min_value) * unit  # mapped position to graph
 
-        return position
+        return int(position)
 
     @staticmethod
-    def __candle_color(top: int, bottom: int) -> Color:
+    def __candle_color(top: int, bottom: int) -> str:
         if top < bottom:
             return Color.GREEN
         elif top > bottom:
