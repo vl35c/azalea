@@ -18,6 +18,11 @@ class Graph:
     def rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
+    def draw(self, stock_data) -> None:
+        self.draw_base()
+        self.hover(stock_data)
+        self.draw_data(stock_data)
+
     def draw_base(self) -> None:
         pygame.draw.rect(self.window, Color.WHITE, self.rect, 0, GRAPH_CORNER_ROUNDING)
 
@@ -96,8 +101,8 @@ class Graph:
         day_high = stock_data.stock.historic_price[day].high
 
         self.font.render(f"Closing Price: {closing_price:.2f}", True, (255, 255, 255), (0, 40))
-        self.font.render(f"High: {day_low:.2f}", True, (255, 255, 255), (0, 60))
-        self.font.render(f"Low: {day_high:.2f}", True, (255, 255, 255), (0, 80))
+        self.font.render(f"High: {day_high:.2f}", True, (255, 255, 255), (0, 60))
+        self.font.render(f"Low: {day_low:.2f}", True, (255, 255, 255), (0, 80))
 
     def hover(self, stock_data) -> None:
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -107,6 +112,9 @@ class Graph:
         # map mouse so that top corner of graph is (0,0)
         x, y = mouse_x - GRAPH_X, mouse_y - GRAPH_Y
         candle = x // CANDLE_SPACING
+
+        if candle >= stock_data.day:
+            return
 
         self.highlight_candle(candle)
         self.candle_data(candle, stock_data)

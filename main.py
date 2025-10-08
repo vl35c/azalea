@@ -25,11 +25,7 @@ class Main:
         self.day = 0
 
         self.buttons = [
-            Button(20, 540, 60, 40, Color.RED, text="inc",
-                   func=lambda: self.stock.change_value(1)),
-            Button(100, 540, 60, 40, Color.BLUE, text="dec",
-                   func=lambda: self.stock.change_value(-1)),
-            Button(180, 540, 60, 40, Color.AQUAMARINE, text="tick",
+            Button(20, 540, 60, 40, Color.AQUAMARINE, text="tick",
                    func=self.tick)
         ]
 
@@ -39,7 +35,7 @@ class Main:
 
         self.font = Font()
         self.variance = Variance()
-
+    
     def tick(self) -> None:
         for i in range(24):
             change = self.variance.iterate()
@@ -67,14 +63,15 @@ class Main:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_mouse()
-
+            
             self.font.render(f'Day: {self.day}', True, (255, 255, 255), (0, 0))
             self.font.render(f'Stock Price: {self.stock.share_value:.2f}', True, (255, 255, 255), (100, 0))
+            #self.font.render()
 
             for button in self.buttons:
                 button.draw()
                 button.render()
-
+            
             self.graph.draw(self.stock_data)
 
             pygame.display.flip()

@@ -11,7 +11,6 @@ class Color:
     WHITE = "#fffaf0"
     GREY = "#838b8b"
 
-
 # GRAPH SETTINGS
 GRAPH_X = 60
 GRAPH_WIDTH = SCREEN_WIDTH - 2 * GRAPH_X
