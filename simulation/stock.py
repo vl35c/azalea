@@ -51,8 +51,8 @@ class Stock:
 
 class ShareData:
     def __init__(self, open_v: float, close_v: float, high: float, low: float):
-        self.open_v = open_v
-        self.close_v = close_v
+        self.open_v = open_v  # open_v is opening value
+        self.close_v = close_v  # close_v is closing value
         self.high = high
         self.low = low
         self.ceiling = high

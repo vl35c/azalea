@@ -16,13 +16,17 @@ class Graph:
         self.font = Font()
         self.renderer = Renderer()
 
+    @staticmethod
+    def __offset_tuple(t1: tuple, t2: tuple) -> tuple:
+        return t1[0] + t2[0], t1[1] + t2[1]
+
     @property
     def rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self, stock_data) -> None:
         self.renderer.hold(lambda: self.draw_base(), 0)
-        self.renderer.hold(lambda: self.hover(stock_data), 1)
+        self.hover(stock_data)
         self.renderer.hold(lambda: self.draw_data(stock_data), 2)
 
         self.renderer.call()
@@ -105,10 +109,22 @@ class Graph:
         day_low = stock_data.stock.historic_price[day].low
         day_high = stock_data.stock.historic_price[day].high
 
-        self.font.render(f"Opening Price: {opening_price:.2f}", True, (255, 255, 255), (0, 20))
-        self.font.render(f"Closing Price: ${closing_price:.2f}", True, (255, 255, 255), (0, 40))
-        self.font.render(f"High: ${day_high:.2f}", True, (255, 255, 255), (0, 60))
-        self.font.render(f"Low: ${day_low:.2f}", True, (255, 255, 255), (0, 80))
+        close_percentage = (closing_price - opening_price) / closing_price * 100
+        low_percentage = (day_low - opening_price) / day_low * 100
+        high_percentage = (day_high - opening_price) / day_high * 100
+
+        origin = self.__offset_tuple(pygame.mouse.get_pos(), (16, 10))
+        rect = pygame.Rect(*origin, 200, 80)
+        pygame.draw.rect(self.window, Color.LIGHT_BLACK, rect, 0, GRAPH_CORNER_ROUNDING)
+
+        self.font.render(f"{'Open:':<6} ${opening_price:.2f}", True, Color.WHITE,
+                         self.__offset_tuple(origin, (4, 0)))
+        self.font.render(f"{'Close:':<6} ${closing_price:.2f}  {close_percentage:.1f}%", True, Color.WHITE,
+                         self.__offset_tuple(origin, (4, 20)))
+        self.font.render(f"{'High:':<6} ${day_high:.2f}  {high_percentage:.1f}%", True, Color.WHITE,
+                         self.__offset_tuple(origin, (4, 40)))
+        self.font.render(f"{'Low:':<6} ${day_low:.2f}  {low_percentage:.1f}%", True, Color.WHITE,
+                         self.__offset_tuple(origin, (4, 60)))
 
     def hover(self, stock_data) -> None:
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -122,8 +138,8 @@ class Graph:
         if candle >= stock_data.day:
             return
 
-        self.highlight_candle(candle)
-        self.candle_data(candle, stock_data)
+        self.renderer.hold(lambda: self.highlight_candle(candle), 1)
+        self.renderer.hold(lambda: self.candle_data(candle, stock_data), 3)
 
     @staticmethod
     def map(min_value: int, max_value: int, min_y: int, max_y: int, value: int) -> int:

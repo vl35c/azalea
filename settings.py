@@ -4,6 +4,7 @@ SCREEN_HEIGHT = 600
 
 class Color:
     BLACK = "#16161d"
+    LIGHT_BLACK = "#38383f"
     GREEN = "#66cd00"
     RED = "#dc143c"
     AQUAMARINE = "#458b74"
@@ -14,7 +15,7 @@ class Color:
 
 
 # GRAPH SETTINGS
-GRAPH_X = 60
+GRAPH_X = 200
 GRAPH_WIDTH = SCREEN_WIDTH - 2 * GRAPH_X
 GRAPH_Y = 100
 GRAPH_HEIGHT = 200
