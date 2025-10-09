@@ -9,7 +9,7 @@ class Stock:
         self.total_shares = total_shares
         # key: date, value: (closing, low, high)
         # also uses day -1 to start simulation with a value
-        self.historic_price: dict[int: ShareData] = {-1: ShareData.from_value(share_value)}
+        self.historic_price: dict[int: ShareData] = {}
         # bound stores the ceiling and floor values for the graph to contain the values
         self.bound: ShareData = ShareData.from_high_low(int(share_value / 2), int(share_value * 2))
         # current day stores the daily highs and lows
@@ -39,7 +39,12 @@ class Stock:
         self.store_value_data()
 
     def update_price_record(self, date: int) -> None:
-        self.historic_price[date] = ShareData.from_full(self.current_day.open_v, self.share_value, self.current_day.low, self.current_day.high)
+        self.historic_price[date] = ShareData.from_full(
+            self.current_day.open_v,
+            self.share_value,  # share value when updating day becomes closing value
+            self.current_day.low,
+            self.current_day.high
+        )
 
         self.current_day.open_v = self.share_value
         self.current_day.low = self.share_value

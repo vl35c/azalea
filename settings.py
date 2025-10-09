@@ -26,4 +26,4 @@ CANDLE_LINE_WIDTH = 2
 
 # high factor is for making sure the graph does not go over the top, and low is to keep it from going under bottom
 HIGH_FACTOR = 1.1
-LOW_FACTOR = 0.85
+LOW_FACTOR = 0.9
