@@ -4,12 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7874d1f4-0940-40d4-ad5b-d1823679b92c" name="Changes" comment="refactoring and commenting">
+    <list default="true" id="7874d1f4-0940-40d4-ad5b-d1823679b92c" name="Changes" comment="stock file added">
       <change beforePath="$PROJECT_DIR$/.idea/stock-sim.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/stock-sim.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/render/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/render/graph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/stock.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/stock.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +25,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="SET_USER_NAME_GLOBALLY" value="false" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -39,6 +38,9 @@
     &quot;accountId&quot;: &quot;ad5ae206-d0e6-49a0-ad7e-05560d7d4672&quot;
   }
 }</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -50,56 +52,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.graph.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.settings.executor": "Run",
-    "Python.stock.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/xrb23140/PycharmProjects/stock-sim",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.settings.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
-  <component name="RunManager">
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <module name="stock-sim" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-  </component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-PY-251.26094.141" />
-        <option value="bundled-python-sdk-9f8e2b94138c-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26094.141" />
+        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
       </set>
     </attachedChunks>
   </component>
@@ -111,15 +84,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1758637514971</updated>
-      <workItem from="1758637515970" duration="1295000" />
-      <workItem from="1758803377931" duration="7435000" />
-      <workItem from="1758885177017" duration="1119000" />
-      <workItem from="1759507117724" duration="7141000" />
-      <workItem from="1759520497986" duration="6729000" />
-      <workItem from="1759749833364" duration="70000" />
-      <workItem from="1759750085709" duration="3000" />
-      <workItem from="1759750090635" duration="1887000" />
-      <workItem from="1759919799313" duration="3328000" />
+      <workItem from="1758637515970" duration="1337000" />
+      <workItem from="1758713599519" duration="306000" />
+      <workItem from="1758713954130" duration="929000" />
+      <workItem from="1758803584247" duration="199000" />
+      <workItem from="1758807981348" duration="28000" />
+      <workItem from="1760019846117" duration="2449000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -153,87 +123,29 @@
       <option name="project" value="LOCAL" />
       <updated>1758638642187</updated>
     </task>
-    <task id="LOCAL-00005" summary="added stock history and allowed stock price to manually be changed">
+    <task id="LOCAL-00005" summary="stock file added">
       <option name="closed" value="true" />
-      <created>1758804775948</created>
+      <created>1758638841779</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
       <option name="project" value="LOCAL" />
-      <updated>1758804775948</updated>
+      <updated>1758638841779</updated>
     </task>
-    <task id="LOCAL-00006" summary="Added daily low and high">
-      <option name="closed" value="true" />
-      <created>1758886079979</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1758886079979</updated>
-    </task>
-    <task id="LOCAL-00007" summary="added graph function and mapped candle chart to go the correct way">
-      <option name="closed" value="true" />
-      <created>1758888245194</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1758888245194</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Replaced closing, low, high tuple to DayShare class">
-      <option name="closed" value="true" />
-      <created>1758889579830</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1758889579830</updated>
-    </task>
-    <task id="LOCAL-00009" summary="refactored Button into own class, created custom Font class">
-      <option name="closed" value="true" />
-      <created>1759494155639</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1759494155639</updated>
-    </task>
-    <task id="LOCAL-00010" summary="refactoring and commenting">
-      <option name="closed" value="true" />
-      <created>1759510736070</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1759510736070</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init commit" />
     <MESSAGE value="window running" />
     <MESSAGE value="callum did not allow an enum for colors" />
-    <MESSAGE value="added stock history and allowed stock price to manually be changed" />
-    <MESSAGE value="Added daily low and high" />
-    <MESSAGE value="added graph function and mapped candle chart to go the correct way" />
-    <MESSAGE value="Replaced closing, low, high tuple to DayShare class" />
-    <MESSAGE value="refactored Button into own class, created custom Font class" />
-    <MESSAGE value="refactoring and commenting" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactoring and commenting" />
+    <MESSAGE value="stock file added" />
+    <option name="LAST_COMMIT_MESSAGE" value="stock file added" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/stock_sim$stock.coverage" NAME="stock Coverage Results" MODIFIED="1758887670486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/stock_sim$main.coverage" NAME="main Coverage Results" MODIFIED="1759924759739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/stock_sim$main.coverage" NAME="main Coverage Results" MODIFIED="1760022258339" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stock_sim$settings.coverage" NAME="settings Coverage Results" MODIFIED="1758638390261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/stock_sim$graph.coverage" NAME="graph Coverage Results" MODIFIED="1758887732887" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

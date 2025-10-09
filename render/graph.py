@@ -41,7 +41,7 @@ class Graph:
                 stock_data.stock.bound.ceiling,
                 self.y + self.height,
                 self.y,
-                stock_data.stock.historic_price[d].value
+                stock_data.stock.historic_price[d].close_v
             )
             # opening price
             bottom = self.map(
@@ -49,7 +49,7 @@ class Graph:
                 stock_data.stock.bound.ceiling,
                 self.y + self.height,
                 self.y,
-                stock_data.stock.historic_price[d - 1].value
+                stock_data.stock.historic_price[d - 1].close_v
             )
 
             # green for increase, red for decrease, grey for no change
@@ -96,10 +96,12 @@ class Graph:
         pygame.draw.rect(self.window, Color.GREY, rect)
 
     def candle_data(self, day: int, stock_data) -> None:
-        closing_price = stock_data.stock.historic_price[day].value
+        opening_price = stock_data.stock.historic_price[day].open_v
+        closing_price = stock_data.stock.historic_price[day].close_v
         day_low = stock_data.stock.historic_price[day].low
         day_high = stock_data.stock.historic_price[day].high
 
+        self.font.render(f"Opening Price: {opening_price:.2f}", True, (255, 255, 255), (0, 20))
         self.font.render(f"Closing Price: {closing_price:.2f}", True, (255, 255, 255), (0, 40))
         self.font.render(f"High: {day_high:.2f}", True, (255, 255, 255), (0, 60))
         self.font.render(f"Low: {day_low:.2f}", True, (255, 255, 255), (0, 80))

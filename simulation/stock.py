@@ -39,8 +39,9 @@ class Stock:
         self.store_value_data()
 
     def update_price_record(self, date: int) -> None:
-        self.historic_price[date] = ShareData.from_full(self.share_value, self.current_day.low, self.current_day.high)
+        self.historic_price[date] = ShareData.from_full(self.current_day.open_v, self.share_value, self.current_day.low, self.current_day.high)
 
+        self.current_day.open_v = self.share_value
         self.current_day.low = self.share_value
         self.current_day.high = self.share_value
 
@@ -49,24 +50,29 @@ class Stock:
 
 
 class ShareData:
-    def __init__(self, value: float, low: float, high: float):
-        self.value = value
-        self.low = low
+    def __init__(self, open_v: float, close_v: float, high: float, low: float):
+        self.open_v = open_v
+        self.close_v = close_v
         self.high = high
+        self.low = low
         self.ceiling = high
         self.floor = low
 
     @classmethod
     def from_value(cls, value: float) -> Self:
-        return cls(value, value, value)
+        return cls(value, value, value, value)
 
     @classmethod
-    def from_full(cls, value: float, low: float, high: float) -> Self:
-        return cls(value, low, high)
+    def from_full(cls, open_v: float, close_v: float, high: float, low: float) -> Self:
+        return cls(open_v, close_v, low, high)
+
+    @classmethod
+    def from_v_h_l(cls, value: float, high: float, low: float) -> Self:
+        return cls(value, value, high, low)
 
     @classmethod
     def from_high_low(cls, low: float, high: float) -> Self:
-        return cls(-1, low, high)
+        return cls(-1, -1, low, high)
 
     # evaluate and swap if greater
     def greater_swap(self, value: float) -> None:

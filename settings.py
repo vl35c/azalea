@@ -9,7 +9,7 @@ class Color:
     AQUAMARINE = "#458b74"
     BLUE = "#53868b"
     WHITE = "#fffaf0"
-    GREY = "#838b8b"
+    GREY = "#c9cfcf"
 
 # GRAPH SETTINGS
 GRAPH_X = 60
