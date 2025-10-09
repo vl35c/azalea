@@ -3,10 +3,10 @@ import csv
 
 from simulation.stock import Stock
 
+
 class StockList:
     def __init__(self):
         self.stock_list: [Stock] = []
-
 
     def load_stocks(self, filename: str):
         with open(filename, newline='') as csvfile:
