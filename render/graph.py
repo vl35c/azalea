@@ -2,6 +2,7 @@ import pygame
 
 from settings import *
 from render.font import Font
+from render.renderer import Renderer
 
 
 class Graph:
@@ -13,15 +14,18 @@ class Graph:
 
         self.window = pygame.display.get_surface()
         self.font = Font()
+        self.renderer = Renderer()
 
     @property
     def rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
     def draw(self, stock_data) -> None:
-        self.draw_base()
-        self.hover(stock_data)
-        self.draw_data(stock_data)
+        self.renderer.hold(lambda: self.draw_base(), 0)
+        self.renderer.hold(lambda: self.hover(stock_data), 1)
+        self.renderer.hold(lambda: self.draw_data(stock_data), 2)
+
+        self.renderer.call()
 
     def draw_base(self) -> None:
         pygame.draw.rect(self.window, Color.WHITE, self.rect, 0, GRAPH_CORNER_ROUNDING)
@@ -93,7 +97,7 @@ class Graph:
         height = GRAPH_HEIGHT
 
         rect = pygame.Rect(x, y, width, height)
-        pygame.draw.rect(self.window, Color.GREY, rect)
+        pygame.draw.rect(self.window, Color.LIGHT_GREY, rect, 0, GRAPH_CORNER_ROUNDING)
 
     def candle_data(self, day: int, stock_data) -> None:
         opening_price = stock_data.stock.historic_price[day].open_v
@@ -102,9 +106,9 @@ class Graph:
         day_high = stock_data.stock.historic_price[day].high
 
         self.font.render(f"Opening Price: {opening_price:.2f}", True, (255, 255, 255), (0, 20))
-        self.font.render(f"Closing Price: {closing_price:.2f}", True, (255, 255, 255), (0, 40))
-        self.font.render(f"High: {day_high:.2f}", True, (255, 255, 255), (0, 60))
-        self.font.render(f"Low: {day_low:.2f}", True, (255, 255, 255), (0, 80))
+        self.font.render(f"Closing Price: ${closing_price:.2f}", True, (255, 255, 255), (0, 40))
+        self.font.render(f"High: ${day_high:.2f}", True, (255, 255, 255), (0, 60))
+        self.font.render(f"Low: ${day_low:.2f}", True, (255, 255, 255), (0, 80))
 
     def hover(self, stock_data) -> None:
         mouse_x, mouse_y = pygame.mouse.get_pos()
