@@ -3,6 +3,7 @@ import pygame
 from settings import *
 from render.font import Font
 from render.renderer import Renderer
+from input.mouse_handler import MouseHandler
 
 
 class Graph:
@@ -16,13 +17,44 @@ class Graph:
         self.font = Font()
         self.renderer = Renderer()
 
-    @staticmethod
-    def __offset_tuple(t1: tuple, t2: tuple) -> tuple:
-        return t1[0] + t2[0], t1[1] + t2[1]
-
     @property
     def rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
+
+    # add tuples
+    @staticmethod
+    def __add_tuples(t1: tuple, t2: tuple) -> tuple[int, int]:
+        return t1[0] + t2[0], t1[1] + t2[1]
+
+    # return candle color based on graph position
+    @staticmethod
+    def __candle_color(top: int, bottom: int) -> str:
+        if top < bottom:
+            return Color.GREEN
+        elif top > bottom:
+            return Color.RED
+        else:
+            return Color.GREY
+
+    # returns column (candle) of graph
+    @staticmethod
+    def __get_column(x: int) -> int:
+        x -= GRAPH_X  # adjust x so that left edge of graph is coordinate (0,_)
+        return x // CANDLE_SPACING
+
+    @staticmethod
+    def __clamp(min_value: int, max_value: int, value: int) -> int:
+        return max(min_value, min(max_value, value))
+
+    # linearly interpolate between 2 values
+    @staticmethod
+    def map(min_value: int, max_value: int, min_y: int, max_y: int, value: int) -> int:
+        height = max_y - min_y  # height of the graph
+        diff = max_value - min_value  # difference in stock price
+        unit = abs(height / diff)  # how big 1 unit should be
+        position = min_y - (value - min_value) * unit  # mapped position to graph
+
+        return int(position)
 
     def draw(self, stock_data) -> None:
         self.renderer.hold(lambda: self.draw_base(), 0)
@@ -94,15 +126,20 @@ class Graph:
             pygame.draw.line(self.window, color, high, low, CANDLE_LINE_WIDTH)
 
     # draws a background behind a candle to indicate which one is hovered
-    def highlight_candle(self, position: int) -> None:
-        x = GRAPH_X + position * CANDLE_SPACING
+    def highlight_candle(self, start_position: int, end_position: int=-1) -> None:
+        x = GRAPH_X + start_position * CANDLE_SPACING
         y = GRAPH_Y
-        width = CANDLE_WIDTH
         height = GRAPH_HEIGHT
+        if end_position == -1:
+            width = CANDLE_WIDTH
+        else:
+            end_position = self.__clamp(0, GRAPH_WIDTH // CANDLE_SPACING, end_position)
+            width = (end_position - start_position) * CANDLE_SPACING
 
         rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.window, Color.LIGHT_GREY, rect, 0, GRAPH_CORNER_ROUNDING)
 
+    # shows pricing data when hovering on candle
     def candle_data(self, day: int, stock_data) -> None:
         day_offset = day + max(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, 0)
 
@@ -116,49 +153,37 @@ class Graph:
         high_percentage = (day_high - opening_price) / day_high * 100
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        origin = self.__offset_tuple((mouse_x, mouse_y),
-                                     (16 if mouse_x < SCREEN_WIDTH - 300 else -216, 10))
+        origin = self.__add_tuples((mouse_x, mouse_y), (16 if mouse_x < SCREEN_WIDTH - 300 else -216, 10))
         rect = pygame.Rect(*origin, 200, 80)
         pygame.draw.rect(self.window, Color.LIGHT_BLACK, rect, 0, GRAPH_CORNER_ROUNDING)
 
         self.font.render(f"{'Open:':<6} ${opening_price:.2f}",
-                         True, Color.WHITE, self.__offset_tuple(origin, (4, 0)))
+                         True, Color.WHITE, self.__add_tuples(origin, (4, 0)))
         self.font.render(f"{'Close:':<6} ${closing_price:.2f}  {close_percentage:.1f}%",
-                         True, Color.WHITE, self.__offset_tuple(origin, (4, 20)))
+                         True, Color.WHITE, self.__add_tuples(origin, (4, 20)))
         self.font.render(f"{'High:':<6} ${day_high:.2f}  {high_percentage:.1f}%",
-                         True, Color.WHITE, self.__offset_tuple(origin, (4, 40)))
+                         True, Color.WHITE, self.__add_tuples(origin, (4, 40)))
         self.font.render(f"{'Low:':<6} ${day_low:.2f}  {low_percentage:.1f}%",
-                         True, Color.WHITE, self.__offset_tuple(origin, (4, 60)))
+                         True, Color.WHITE, self.__add_tuples(origin, (4, 60)))
 
     def hover(self, stock_data) -> None:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if not self.rect.collidepoint(mouse_x, mouse_y):
             return
 
-        # map mouse so that top corner of graph is (0,0)
-        x, y = mouse_x - GRAPH_X, mouse_y - GRAPH_Y
-        candle = x // CANDLE_SPACING
+        column = self.__get_column(mouse_x)
 
-        if candle >= stock_data.day:
+        # if viewing column which for data does not exist, error will occur
+        if column >= stock_data.day:
             return
 
-        self.renderer.hold(lambda: self.highlight_candle(candle), 1)
-        self.renderer.hold(lambda: self.candle_data(candle, stock_data), 3)
+        # render on different layers, need candles rendered between these 2, hence z layers
+        self.renderer.hold(lambda: self.highlight_candle(column), 1)
+        self.renderer.hold(lambda: self.candle_data(column, stock_data), 3)
 
-    @staticmethod
-    def map(min_value: int, max_value: int, min_y: int, max_y: int, value: int) -> int:
-        height = max_y - min_y  # height of the graph
-        diff = max_value - min_value  # difference in stock price
-        unit = abs(height / diff)  # how big 1 unit should be
-        position = min_y - (value - min_value) * unit  # mapped position to graph
+    def handle_held(self, mouse: MouseHandler):
+        c1 = self.__get_column(mouse.x)  # initial column
+        c2 = self.__get_column(pygame.mouse.get_pos()[0])  # current column
+        c2 = c2 + 1 if c2 > c1 else c2  # if end is bigger than start, cover hovered column as well
 
-        return int(position)
-
-    @staticmethod
-    def __candle_color(top: int, bottom: int) -> str:
-        if top < bottom:
-            return Color.GREEN
-        elif top > bottom:
-            return Color.RED
-        else:
-            return Color.GREY
+        self.renderer.hold(lambda: self.highlight_candle(c1, c2), 1)
