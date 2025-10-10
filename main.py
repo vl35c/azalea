@@ -23,19 +23,20 @@ class Main:
         self.window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Stock Sim")
 
-        self.stock = Stock("FTSE100", 20, 1000)
         self.stock_list = StockList()
-        self.stock_list.load_stocks('stocks.csv')
+        self.stock_list.load_stocks("stocks.csv")
+        self.stock = self.stock_list.select_stock("NASDAQ")
+
         self.day = 0
 
         self.buttons = [
-            Button(20, 540, 60, 40, Color.AQUAMARINE, text="tick",
+            Button(20, 540, 60, 40, Color.WHITE, Color.AQUAMARINE, text="tick",
                    func=self.tick)
         ]
 
         self.text_inputs = [
             TextInput(int((SCREEN_WIDTH / 2) - 100), 10, 200, 40,
-                      Color.AQUAMARINE, "Search Stock", self.stock_list.select_stocks)
+                      Color.WHITE, Color.LIGHT_GREY, "Search Stock", self.stock_list.select_stocks)
         ]
 
         self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT)
@@ -43,12 +44,12 @@ class Main:
         self.stock_data = StockData(self.day, self.stock)
 
         self.font = Font()
-        self.variance = Variance()
 
     def tick(self) -> None:
         for i in range(24):
-            change = self.variance.iterate()
-            self.stock.set_value(change)
+            for stock in self.stock_list.stock_list:
+                change = stock.variance.iterate()
+                stock.set_value(change)
 
         self.stock.update_price_record(self.day)
         self.day += 1
@@ -62,9 +63,25 @@ class Main:
                 button.func()
                 break
 
+        for text_input in self.text_inputs:
+            clicked_on = text_input.rect.collidepoint(mx, my)
+
+            if not text_input.active and clicked_on:
+                text_input.on_activate()
+            elif text_input.active and not clicked_on:
+                text_input.on_deactivate()
+
+    def handle_key_press(self, event) -> None:
+        if event.unicode.isalpha():
+            letter = event.unicode
+            for text_input in self.text_inputs:
+                if text_input.active:
+                    text_input.on_type(letter)
+
     def change_stock(self, stock: str) -> None:
         if (stock := self.stock_list.select_stocks(stock)) is not None:
             self.stock = stock
+            self.stock_data.stock = stock
 
     def run(self) -> None:
         while True:
@@ -76,6 +93,9 @@ class Main:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_mouse()
+                if event.type == pygame.KEYDOWN:
+                    self.handle_key_press(event)
+
 
             self.font.render(f'Day: {self.day}', True, (255, 255, 255), (0, 0))
             self.font.render(f'{self.stock.name}: ${self.stock.share_value:.2f}', True, (255, 255, 255), (100, 0))
@@ -83,6 +103,10 @@ class Main:
             for button in self.buttons:
                 button.draw()
                 button.render()
+
+            for text_input in self.text_inputs:
+                text_input.draw()
+                text_input.render()
 
             self.graph.draw(self.stock_data)
 

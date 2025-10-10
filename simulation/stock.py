@@ -1,6 +1,6 @@
 from settings import *
 from typing import Self
-
+from simulation.variance import Variance
 
 class Stock:
     def __init__(self, name: str, share_value: float, total_shares: int):
@@ -16,6 +16,7 @@ class Stock:
         self.current_day: ShareData = ShareData.from_value(share_value)
         # all time stores the all-time highs and lows
         self.all_time: ShareData = ShareData.from_value(share_value)
+        self.variance: Variance = Variance(share_value)
 
     def store_value_data(self) -> None:
         self.current_day.greater_swap(self.share_value)
