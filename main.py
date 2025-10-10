@@ -3,10 +3,12 @@ import pygame
 
 from settings import *
 from simulation.stock import Stock
+from simulation.stock_list import StockList
 from simulation.variance import Variance
 from render.graph import Graph
 from render.font import Font
 from render.button import Button
+from render.textinput import TextInput
 
 
 class StockData:
@@ -22,11 +24,18 @@ class Main:
         pygame.display.set_caption("Stock Sim")
 
         self.stock = Stock("FTSE100", 20, 1000)
+        self.stock_list = StockList()
+        self.stock_list.load_stocks('stocks.csv')
         self.day = 0
 
         self.buttons = [
             Button(20, 540, 60, 40, Color.AQUAMARINE, text="tick",
                    func=self.tick)
+        ]
+
+        self.text_inputs = [
+            TextInput(int((SCREEN_WIDTH / 2) - 100), 10, 200, 40,
+                      Color.AQUAMARINE, "Search Stock", self.stock_list.select_stocks)
         ]
 
         self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT)
@@ -52,6 +61,10 @@ class Main:
             if button.rect.collidepoint(mx, my):
                 button.func()
                 break
+
+    def change_stock(self, stock: str) -> None:
+        if (stock := self.stock_list.select_stocks(stock)) is not None:
+            self.stock = stock
 
     def run(self) -> None:
         while True:

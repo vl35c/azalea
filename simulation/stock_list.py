@@ -5,7 +5,7 @@ from simulation.stock import Stock
 
 class StockList:
     def __init__(self):
-        self.stock_list: [Stock] = []
+        self.stock_list: list[Stock] = []
 
 
     def load_stocks(self, filename: str):
@@ -17,7 +17,7 @@ class StockList:
     def add_stock(self, name: str, share_value: float, total_shares: int) -> None:
         self.stock_list.append(Stock(name, share_value, total_shares))
 
-    def stock_names(self) -> [str]:
+    def stock_names(self) -> list[str]:
         return [s.name for s in self.stock_list]
 
     def select_stock(self, name: str) -> Any | None:
@@ -25,3 +25,6 @@ class StockList:
             if s.name == name:
                 return s
         return None
+
+    def select_stocks(self, u_input: str) -> list[str]:
+        return [s.name for s in self.stock_list if u_input][:4]
