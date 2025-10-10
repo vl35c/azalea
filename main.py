@@ -43,12 +43,12 @@ class Main:
         ]
 
         # graph
-        self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT)
+        self.mouse = MouseHandler()
+        self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT, self.mouse)
 
         # misc.
         self.font = Font()
         self.variance = Variance()
-        self.mouse = MouseHandler()
 
     def tick(self) -> None:
         for i in range(24):  # iterate 24 times in 1 day to get daily highs and lows
@@ -91,7 +91,7 @@ class Main:
 
             if pygame.mouse.get_pressed()[0]:
                 if self.mouse.obj == self.graph:
-                    self.graph.handle_held(self.mouse)
+                    self.graph.handle_held(self.stock_data)
 
             self.font.render(
                 f'Day: {self.day}',
