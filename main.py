@@ -7,6 +7,7 @@ from simulation.variance import Variance
 from render.graph import Graph
 from render.font import Font
 from render.button import Button
+from input.mouse_handler import MouseHandler
 
 
 class StockData:
@@ -47,11 +48,10 @@ class Main:
         # misc.
         self.font = Font()
         self.variance = Variance()
-
-        self.clock = pygame.time.Clock()
+        self.mouse = MouseHandler()
 
     def tick(self) -> None:
-        for i in range(24):
+        for i in range(24):  # iterate 24 times in 1 day to get daily highs and lows
             change = self.variance.iterate()
             self.stock.set_value(change)
 
@@ -68,7 +68,7 @@ class Main:
                 break
         else:
             if self.graph.rect.collidepoint(mx, my):
-                print("Hello")
+                self.mouse.click(self.graph)
 
     def run(self) -> None:
         while True:
@@ -86,11 +86,12 @@ class Main:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:  # mouse clicked
                         self.handle_mouse()
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.mouse.release()
 
-            # mouse down (for held)
             if pygame.mouse.get_pressed()[0]:
-                if self.graph.rect.collidepoint(pygame.mouse.get_pos()):
-                    ...
+                if self.mouse.obj == self.graph:
+                    self.graph.handle_held(self.mouse)
 
             self.font.render(
                 f'Day: {self.day}',
@@ -112,9 +113,6 @@ class Main:
             self.graph.draw(self.stock_data)
 
             pygame.display.flip()
-
-            self.clock.tick()
-            print(self.clock.get_fps())
 
 
 if __name__ == '__main__':

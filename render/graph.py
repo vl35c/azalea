@@ -3,6 +3,7 @@ import pygame
 from settings import *
 from render.font import Font
 from render.renderer import Renderer
+from input.mouse_handler import MouseHandler
 
 
 class Graph:
@@ -22,7 +23,7 @@ class Graph:
 
     # add tuples
     @staticmethod
-    def __add_tuples(t1: tuple, t2: tuple) -> tuple:
+    def __add_tuples(t1: tuple, t2: tuple) -> tuple[int, int]:
         return t1[0] + t2[0], t1[1] + t2[1]
 
     # return candle color based on graph position
@@ -34,6 +35,16 @@ class Graph:
             return Color.RED
         else:
             return Color.GREY
+
+    # returns column (candle) of graph
+    @staticmethod
+    def __get_column(x: int) -> int:
+        x -= GRAPH_X  # adjust x so that left edge of graph is coordinate (0,_)
+        return x // CANDLE_SPACING
+
+    @staticmethod
+    def __clamp(min_value: int, max_value: int, value: int) -> int:
+        return max(min_value, min(max_value, value))
 
     # linearly interpolate between 2 values
     @staticmethod
@@ -115,11 +126,15 @@ class Graph:
             pygame.draw.line(self.window, color, high, low, CANDLE_LINE_WIDTH)
 
     # draws a background behind a candle to indicate which one is hovered
-    def highlight_candle(self, position: int) -> None:
-        x = GRAPH_X + position * CANDLE_SPACING
+    def highlight_candle(self, start_position: int, end_position: int=-1) -> None:
+        x = GRAPH_X + start_position * CANDLE_SPACING
         y = GRAPH_Y
-        width = CANDLE_WIDTH
         height = GRAPH_HEIGHT
+        if end_position == -1:
+            width = CANDLE_WIDTH
+        else:
+            end_position = self.__clamp(0, GRAPH_WIDTH // CANDLE_SPACING, end_position)
+            width = (end_position - start_position) * CANDLE_SPACING
 
         rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.window, Color.LIGHT_GREY, rect, 0, GRAPH_CORNER_ROUNDING)
@@ -156,9 +171,7 @@ class Graph:
         if not self.rect.collidepoint(mouse_x, mouse_y):
             return
 
-        # map mouse so that top corner of graph is (0,0)
-        x, y = mouse_x - GRAPH_X, mouse_y - GRAPH_Y
-        column = x // CANDLE_SPACING
+        column = self.__get_column(mouse_x)
 
         # if viewing column which for data does not exist, error will occur
         if column >= stock_data.day:
@@ -167,3 +180,10 @@ class Graph:
         # render on different layers, need candles rendered between these 2, hence z layers
         self.renderer.hold(lambda: self.highlight_candle(column), 1)
         self.renderer.hold(lambda: self.candle_data(column, stock_data), 3)
+
+    def handle_held(self, mouse: MouseHandler):
+        c1 = self.__get_column(mouse.x)  # initial column
+        c2 = self.__get_column(pygame.mouse.get_pos()[0])  # current column
+        c2 = c2 + 1 if c2 > c1 else c2  # if end is bigger than start, cover hovered column as well
+
+        self.renderer.hold(lambda: self.highlight_candle(c1, c2), 1)
