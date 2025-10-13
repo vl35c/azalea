@@ -7,11 +7,13 @@ from input.mouse_handler import MouseHandler
 
 
 class Graph:
-    def __init__(self, x: int, y: int, width: int, height: int) -> None:
+    def __init__(self, x: int, y: int, width: int, height: int, mouse_handler: MouseHandler) -> None:
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+
+        self.mouse_handler = mouse_handler
 
         self.window = pygame.display.get_surface()
         self.font = Font()
@@ -126,47 +128,69 @@ class Graph:
             pygame.draw.line(self.window, color, high, low, CANDLE_LINE_WIDTH)
 
     # draws a background behind a candle to indicate which one is hovered
+    # end position is -1 by default, signalling a single bar highlighted
     def highlight_candle(self, start_position: int, end_position: int=-1) -> None:
-        x = GRAPH_X + start_position * CANDLE_SPACING
+        x = max(GRAPH_X + start_position * CANDLE_SPACING, GRAPH_X)
         y = GRAPH_Y
         height = GRAPH_HEIGHT
         if end_position == -1:
             width = CANDLE_WIDTH
         else:
+            # when dragging ensure neither end of the dragged graph can be outwith the bounds
+            start_position = self.__clamp(0, GRAPH_WIDTH // CANDLE_SPACING, start_position)
             end_position = self.__clamp(0, GRAPH_WIDTH // CANDLE_SPACING, end_position)
             width = (end_position - start_position) * CANDLE_SPACING
 
         rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.window, Color.LIGHT_GREY, rect, 0, GRAPH_CORNER_ROUNDING)
 
+    def __candle_data_calculate(self, stock_data, days: list[int]):
+        days = [day + max(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, 0) for day in days]
+        # filter days to only contain columns whose key values exist in stock_data
+        days = list(set(
+            [self.__clamp(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, stock_data.day - 1, day) for day in days]
+        ))
+
+        opening_price = stock_data.stock.historic_price[min(days)].open_v
+        closing_price = stock_data.stock.historic_price[max(days)].close_v
+        period_high = max([stock_data.stock.historic_price[day].high for day in days])
+        period_low = min([stock_data.stock.historic_price[day].low for day in days])
+
+        if len(days) == 1:  # returning data for a single day
+            return days[0]+1, opening_price, closing_price, period_high, period_low
+        else:  # returning data for a range of days
+            return f'{min(days)+1}-{max(days)+1}', opening_price, closing_price, period_high, period_low
+
     # shows pricing data when hovering on candle
-    def candle_data(self, day: int, stock_data) -> None:
-        day_offset = day + max(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, 0)
+    def candle_data(self, days: list[int], stock_data) -> None:
+        day, opening_price, closing_price, period_high, period_low = self.__candle_data_calculate(stock_data, days)
 
-        opening_price = stock_data.stock.historic_price[day_offset].open_v
-        closing_price = stock_data.stock.historic_price[day_offset].close_v
-        day_low = stock_data.stock.historic_price[day_offset].low
-        day_high = stock_data.stock.historic_price[day_offset].high
-
-        close_percentage = (closing_price - opening_price) / closing_price * 100
-        low_percentage = (day_low - opening_price) / day_low * 100
-        high_percentage = (day_high - opening_price) / day_high * 100
+        # calculate percentage change
+        close_percentage = -(opening_price - closing_price) / opening_price * 100
+        low_percentage = -(opening_price - period_low) / opening_price * 100
+        high_percentage = -(opening_price - period_high) / opening_price * 100
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         origin = self.__add_tuples((mouse_x, mouse_y), (16 if mouse_x < SCREEN_WIDTH - 300 else -216, 10))
-        rect = pygame.Rect(*origin, 200, 80)
+        rect = pygame.Rect(*origin, 200, 100)
         pygame.draw.rect(self.window, Color.LIGHT_BLACK, rect, 0, GRAPH_CORNER_ROUNDING)
 
-        self.font.render(f"{'Open:':<6} ${opening_price:.2f}",
+        self.font.render(f"{f'Day: {day}':^22}",
                          True, Color.WHITE, self.__add_tuples(origin, (4, 0)))
-        self.font.render(f"{'Close:':<6} ${closing_price:.2f}  {close_percentage:.1f}%",
+        self.font.render(f"{'Open:':<6} ${opening_price:.2f}",
                          True, Color.WHITE, self.__add_tuples(origin, (4, 20)))
-        self.font.render(f"{'High:':<6} ${day_high:.2f}  {high_percentage:.1f}%",
+        self.font.render(f"{'Close:':<6} ${closing_price:.2f}  {close_percentage:.1f}%",
                          True, Color.WHITE, self.__add_tuples(origin, (4, 40)))
-        self.font.render(f"{'Low:':<6} ${day_low:.2f}  {low_percentage:.1f}%",
+        self.font.render(f"{'High:':<6} ${period_high:.2f}  {high_percentage:.1f}%",
                          True, Color.WHITE, self.__add_tuples(origin, (4, 60)))
+        self.font.render(f"{'Low:':<6} ${period_low:.2f}  {low_percentage:.1f}%",
+                         True, Color.WHITE, self.__add_tuples(origin, (4, 80)))
 
     def hover(self, stock_data) -> None:
+        # don't call hover if mouse is held
+        if self.mouse_handler.obj is not None:
+            return
+
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if not self.rect.collidepoint(mouse_x, mouse_y):
             return
@@ -179,11 +203,21 @@ class Graph:
 
         # render on different layers, need candles rendered between these 2, hence z layers
         self.renderer.hold(lambda: self.highlight_candle(column), 1)
-        self.renderer.hold(lambda: self.candle_data(column, stock_data), 3)
+        self.renderer.hold(lambda: self.candle_data([column], stock_data), 3)
 
-    def handle_held(self, mouse: MouseHandler):
-        c1 = self.__get_column(mouse.x)  # initial column
-        c2 = self.__get_column(pygame.mouse.get_pos()[0])  # current column
-        c2 = c2 + 1 if c2 > c1 else c2  # if end is bigger than start, cover hovered column as well
+    # handle graph functions when mouse is held on it
+    def handle_held(self, stock_data) -> None:
+        if stock_data.day == 0:
+            return
+
+        c1 = self.__get_column(self.mouse_handler.x)  # initial column
+        c2 = self.__get_column(pygame.mouse.get_pos()[0]) + 1  # current column
+
+        # if dragged backwards, switch and correct columns
+        if c2 <= c1:
+            c1, c2 = c2, c1
+            c1 -= 1
+            c2 += 1
 
         self.renderer.hold(lambda: self.highlight_candle(c1, c2), 1)
+        self.renderer.hold(lambda: self.candle_data([c1 + i for i in range(max(c2 - c1, 1))], stock_data), 3)
