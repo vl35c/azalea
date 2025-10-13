@@ -15,7 +15,7 @@ class Interactor:
         self.text_color = text_color
         self.bg_color = bg_color # background color
         self.text = text
-        self.func = func
+        self._func = func
 
         self.window = pygame.display.get_surface()
         self.font = Font()
@@ -30,9 +30,9 @@ class Interactor:
     def rect(self) -> pygame.Rect:
         return pygame.Rect(self.x, self.y, self.width, self.height)
 
-    # calls buttons functions
+    # calls interactors functions
     def func(self) -> ():
-        return self.func()
+        return self._func()
 
     # calculate position to center text in button
     def __centred_text(self, text_object: str) -> tuple[int, int]:

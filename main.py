@@ -48,19 +48,20 @@ class Main:
         self.font = Font()
 
     def tick(self) -> None:
-        for i in range(24):
-            for stock in self.stock_list.stock_list:
+        for stock in self.stock_list.stock_list:
+            for i in range(24):
                 change = stock.variance.iterate()
                 stock.set_value(change)
 
-        self.stock.update_price_record(self.day)
+            stock.update_price_record(self.day)
+
         self.day += 1
         self.stock_data.day += 1
 
     def handle_mouse(self) -> None:
         mx, my = pygame.mouse.get_pos()
 
-        for button in self.buttons:
+        for button in self.buttons + self.text_inputs_buttons:
             if button.rect.collidepoint(mx, my):
                 button.func()
                 break
@@ -84,8 +85,6 @@ class Main:
             letter = event.unicode
             self.text_inputs_buttons = text_input.on_type(letter)
 
-
-
     def find_active_text_input(self) -> TextInput | None:
         for text_input in self.text_inputs:
             if text_input.active:
@@ -93,11 +92,11 @@ class Main:
         return None
 
     def change_stock(self, stock: str) -> None:
-        print(stock)
-
-        if (stock := self.stock_list.select_stocks(stock)) is not None:
+        if (stock_str_arr := self.stock_list.select_stocks(stock)) is not None:
+            stock = self.stock_list.select_stock(stock_str_arr[0])
             self.stock = stock
             self.stock_data.stock = stock
+
 
     def run(self) -> None:
         while True:

@@ -32,12 +32,10 @@ class TextInput(Interactor):
 
         start_y = self.y + self.height + 5
 
-        for i,option in enumerate(option_list):
-            buttons.append(Button(self.x, start_y + (40*i), self.width, 40, self.text_color, self.bg_color, text=option, func=lambda : self.button_func(option)))
-
+        p = lambda val: lambda: self.button_func(val)
+        for i, option in enumerate(option_list):
+            buttons.append(Button(self.x, start_y + (40*i), self.width, 40, self.text_color, self.bg_color, text=option, func=p(option)))
         return buttons
-
-
 
     def remove_char(self):
         self.text = self.text[:-1]
