@@ -8,6 +8,7 @@ class StockList:
     def __init__(self):
         self.stock_list: list[Stock] = []
 
+
     def load_stocks(self, filename: str):
         with open(filename, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
@@ -25,3 +26,6 @@ class StockList:
             if s.name == name:
                 return s
         return None
+
+    def select_stocks(self, u_input: str) -> list[str]:
+        return [s.name for s in self.stock_list if u_input.lower() in s.name.lower()][:4]
