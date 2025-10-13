@@ -36,8 +36,10 @@ class Main:
 
         self.text_inputs = [
             TextInput(int((SCREEN_WIDTH / 2) - 100), 10, 200, 40,
-                      Color.WHITE, Color.LIGHT_GREY, "Search Stock", self.stock_list.select_stocks)
+                      Color.BLACK, Color.LIGHT_GREY, "Search Stock", self.stock_list.select_stocks, self.change_stock)
         ]
+
+        self.text_inputs_buttons = []
 
         self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT)
 
@@ -72,13 +74,27 @@ class Main:
                 text_input.on_deactivate()
 
     def handle_key_press(self, event) -> None:
-        if event.unicode.isalpha():
+        if (text_input := self.find_active_text_input()) is None:
+            return
+
+        if event.key == pygame.K_BACKSPACE:
+            text_input.remove_char()
+
+        if event.unicode.isalpha() or event.unicode.isnumeric():
             letter = event.unicode
-            for text_input in self.text_inputs:
-                if text_input.active:
-                    text_input.on_type(letter)
+            self.text_inputs_buttons = text_input.on_type(letter)
+
+
+
+    def find_active_text_input(self) -> TextInput | None:
+        for text_input in self.text_inputs:
+            if text_input.active:
+                return text_input
+        return None
 
     def change_stock(self, stock: str) -> None:
+        print(stock)
+
         if (stock := self.stock_list.select_stocks(stock)) is not None:
             self.stock = stock
             self.stock_data.stock = stock
@@ -109,6 +125,11 @@ class Main:
                 text_input.render()
 
             self.graph.draw(self.stock_data)
+
+            for button in self.text_inputs_buttons:
+                button.draw()
+                button.render()
+
 
             pygame.display.flip()
 
