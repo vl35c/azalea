@@ -1,8 +1,5 @@
-from typing import Callable
-
 import pygame
 
-from settings import *
 from render.font import Font
 
 
@@ -38,8 +35,8 @@ class Interactor:
     def __centred_text(self, text_object: str) -> tuple[int, int]:
         text_object = self.font.string_to_surface(text_object)
 
-        x = self.x + (self.width - text_object.get_width()) / 2
-        y = self.y + (self.height - text_object.get_height()) / 2
+        x = self.x + (self.width - text_object.get_width()) // 2
+        y = self.y + (self.height - text_object.get_height()) // 2
 
         return x, y
 

@@ -1,5 +1,5 @@
-from typing import Any
 import csv
+from typing import Any
 
 from simulation.stock import Stock
 
@@ -7,7 +7,6 @@ from simulation.stock import Stock
 class StockList:
     def __init__(self):
         self.stock_list: list[Stock] = []
-
 
     def load_stocks(self, filename: str):
         with open(filename, newline='') as csvfile:
@@ -19,13 +18,13 @@ class StockList:
         self.stock_list.append(Stock(name, share_value, total_shares))
 
     def stock_names(self) -> list[str]:
-        return [s.name for s in self.stock_list]
+        return [stock.name for stock in self.stock_list]
 
     def select_stock(self, name: str) -> Any | None:
-        for s in self.stock_list:
-            if s.name == name:
-                return s
+        for stock in self.stock_list:
+            if stock.name == name:
+                return stock
         return None
 
-    def select_stocks(self, u_input: str) -> list[str]:
-        return [s.name for s in self.stock_list if u_input.lower() in s.name.lower()][:4]
+    def select_stocks(self, user_input: str) -> list[str]:
+        return [stock.name for stock in self.stock_list if user_input.lower() in stock.name.lower()][:4]
