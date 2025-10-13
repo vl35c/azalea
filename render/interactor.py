@@ -4,11 +4,13 @@ from render.font import Font
 
 
 class Interactor:
-    def __init__(self, x: int, y: int, width: int, height: int, text_color: str, bg_color: str, text:str = None, func = lambda: None):
+    def __init__(self, x: int, y: int, width: int, height: int, radius: int, text_color: str, bg_color: str,
+                 text:str = None, func = lambda: None):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.radius = radius
         self.text_color = text_color
         self.bg_color = bg_color # background color
         self.text = text
@@ -42,7 +44,7 @@ class Interactor:
 
     # draw buttons
     def draw(self) -> None:
-        pygame.draw.rect(self.window, self.bg_color, self.rect, 0, 8)
+        pygame.draw.rect(self.window, self.bg_color, self.rect, 0, self.radius)
 
     # render text on button
     def render(self) -> None:

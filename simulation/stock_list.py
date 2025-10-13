@@ -27,4 +27,7 @@ class StockList:
         return None
 
     def select_stocks(self, user_input: str) -> list[str]:
+        if user_input == "":
+            return []
+
         return [stock.name for stock in self.stock_list if user_input.lower() in stock.name.lower()][:4]

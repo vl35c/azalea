@@ -217,6 +217,10 @@ class Graph:
         c1 = self.__get_column(self.mouse_handler.x)  # initial column
         c2 = self.__get_column(pygame.mouse.get_pos()[0]) + 1  # current column
 
+        # return if started click off of day
+        if c1 >= stock_data.day:
+            return
+
         # if dragged backwards, switch and correct columns
         if c2 <= c1:
             c1, c2 = c2, c1

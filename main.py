@@ -39,13 +39,15 @@ class Main:
 
         # buttons
         self.buttons = [
-            Button(20, 540, 60, 40, Color.WHITE, Color.AQUAMARINE, text="tick",
-                   func=self.tick)
+            Button(20, 540, 60, 40, 8, Color.WHITE, Color.AQUAMARINE, text="tick",
+                   func=self.tick),
+            Button(100, 540, 60, 40, 8, Color.WHITE, Color.RED, text="week",
+                   func=lambda: [self.tick() for _ in range(7)])
         ]
         self.text_inputs_buttons = []
 
         self.text_inputs = [
-            TextInput((SCREEN_WIDTH // 2 - 100), 10, 200, 40, Color.BLACK, Color.LIGHT_GREY,
+            TextInput(SCREEN_WIDTH // 2 - 100, 10, 200, 40, 8, Color.BLACK, Color.LIGHT_GREY,
                       "Search Stock", self.stock_list.select_stocks, self.change_stock)
         ]
 
@@ -85,6 +87,8 @@ class Main:
                 text_input.activate()
             elif text_input.active and not clicked_on:
                 text_input.deactivate()
+                # empty searched list on deactivation
+                self.text_inputs_buttons = []
 
     def handle_key_press(self, event) -> None:
         if (text_input := self.find_active_text_input()) is None:
