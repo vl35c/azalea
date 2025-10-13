@@ -137,7 +137,7 @@ An interactor is an input that the user is able to interact with.
 `y` - y position of the top left of the interactor
 
 ### METHODS
-`__centered_text(self, text_object: str) -> tuple[int, int]` - returns the position to place text so that it is centered in the interactor\
+`_centered_text(self, text_object: str) -> tuple[int, int]` - returns the position to place text so that it is centered in the interactor\
 \
 `text_object` - string to be centered
 

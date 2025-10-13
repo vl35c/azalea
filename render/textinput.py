@@ -62,7 +62,7 @@ class TextInput(Interactor):
 
     def render(self) -> None:
         if not self.active:
-            self.font.render(self.placeholder, True, Color.GREY, self.__offset_text(self.text))
+            self.font.render(self.placeholder, True, Color.GREY, self._centred_text(self.placeholder))
             return
 
         self.font.render(self.text, True, self.text_color, self.__offset_text(self.text))
