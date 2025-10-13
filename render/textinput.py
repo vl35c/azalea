@@ -1,3 +1,5 @@
+import pygame
+
 from typing import Callable
 
 from settings import *
@@ -26,8 +28,16 @@ class TextInput(Interactor):
         self.active = False
         self.__buttons = []
 
-    def on_type(self, character: str):
-        self.text += character
+    def handle_key_press(self, key):
+        if key == pygame.K_BACKSPACE:
+            self.remove_char()
+        else:
+            self.text += key
+
+        return self.on_type()
+
+
+    def on_type(self):
         option_list = self.on_input_list_update(self.text)
         self.__buttons = []
         start_y = self.y + self.height + 5

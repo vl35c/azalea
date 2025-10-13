@@ -44,7 +44,7 @@ class Main:
             Button(100, 540, 60, 40, 8, Color.WHITE, Color.RED, text="week",
                    func=lambda: [self.tick() for _ in range(7)])
         ]
-        self.text_inputs_buttons = []
+        self.text_input_buttons = []
 
         self.text_inputs = [
             TextInput(SCREEN_WIDTH // 2 - 100, 10, 200, 40, 8, Color.BLACK, Color.LIGHT_GREY,
@@ -72,7 +72,7 @@ class Main:
     def handle_mouse(self) -> None:
         mx, my = pygame.mouse.get_pos()
 
-        for button in self.buttons + self.text_inputs_buttons:
+        for button in self.buttons + self.text_input_buttons:
             if button.rect.collidepoint(mx, my):
                 button.func()
                 break
@@ -88,18 +88,18 @@ class Main:
             elif text_input.active and not clicked_on:
                 text_input.deactivate()
                 # empty searched list on deactivation
-                self.text_inputs_buttons = []
+                self.text_input_buttons = []
 
     def handle_key_press(self, event) -> None:
         if (text_input := self.find_active_text_input()) is None:
             return
 
         if event.key == pygame.K_BACKSPACE:
-            text_input.remove_char()
+            self.text_input_buttons = text_input.handle_key_press(pygame.K_BACKSPACE)
 
         if event.unicode.isalpha() or event.unicode.isnumeric():
             letter = event.unicode
-            self.text_inputs_buttons = text_input.on_type(letter)
+            self.text_input_buttons = text_input.handle_key_press(letter)
 
     def find_active_text_input(self) -> TextInput | None:
         for text_input in self.text_inputs:
@@ -161,7 +161,7 @@ class Main:
 
             self.graph.draw(self.stock_data)
 
-            for button in self.text_inputs_buttons:
+            for button in self.text_input_buttons:
                 button.draw()
                 button.render()
 

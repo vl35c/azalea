@@ -144,7 +144,7 @@ class Graph:
         rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.window, Color.LIGHT_GREY, rect, 0, GRAPH_CORNER_ROUNDING)
 
-    def __candle_data_calculate(self, stock_data, days: list[int]):
+    def __candle_data_calculate(self, stock_data, days: list[int]) -> None:
         days = [day + max(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, 0) for day in days]
         # filter days to only contain columns whose key values exist in stock_data
         days = list(set(
