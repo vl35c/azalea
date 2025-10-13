@@ -148,7 +148,11 @@ class Graph:
         days = [day + max(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, 0) for day in days]
         # filter days to only contain columns whose key values exist in stock_data
         days = list(set(
-            [self.__clamp(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, stock_data.day - 1, day) for day in days]
+            [self.__clamp(
+                max(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, 0),
+                stock_data.day - 1,
+                day
+            ) for day in days]
         ))
 
         opening_price = stock_data.stock.historic_price[min(days)].open_v
