@@ -3,6 +3,7 @@ import csv
 
 from simulation.stock import Stock
 
+
 class StockList:
     def __init__(self):
         self.stock_list: list[Stock] = []

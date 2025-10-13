@@ -8,6 +8,7 @@ from simulation.variance import Variance
 from render.graph import Graph
 from render.font import Font
 from render.button import Button
+from input.mouse_handler import MouseHandler
 from render.textinput import TextInput
 
 
@@ -21,14 +22,25 @@ class Main:
     def __init__(self):
         pygame.init()
         self.window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption("Stock Sim")
+        pygame.display.set_caption("Azalea")
+        logo = pygame.image.load("assets/images/azalea-logo.png")
+        pygame.display.set_icon(logo)
 
         self.stock_list = StockList()
         self.stock_list.load_stocks("stocks.csv")
         self.stock = self.stock_list.select_stock("NASDAQ")
 
-        self.day = 0
+        # background
+        self.background = pygame.image.load("assets/images/azalea-logo-dark.png").convert_alpha()
+        self.background.set_alpha(30)
+        self.background = pygame.transform.smoothscale_by(self.background, 0.75)
 
+        # stocks
+        self.stock = Stock("FTSE100", 20, 1000)
+        self.day = 0
+        self.stock_data = StockData(self.day, self.stock)
+
+        # buttons
         self.buttons = [
             Button(20, 540, 60, 40, Color.WHITE, Color.AQUAMARINE, text="tick",
                    func=self.tick)
@@ -42,9 +54,11 @@ class Main:
         self.text_inputs_buttons = []
 
         self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT)
+        # graph
+        self.mouse = MouseHandler()
+        self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT, self.mouse)
 
-        self.stock_data = StockData(self.day, self.stock)
-
+        # misc.
         self.font = Font()
 
     def tick(self) -> None:
@@ -65,6 +79,9 @@ class Main:
             if button.rect.collidepoint(mx, my):
                 button.func()
                 break
+        else:
+            if self.graph.rect.collidepoint(mx, my):
+                self.mouse.click(self.graph)
 
         for text_input in self.text_inputs:
             clicked_on = text_input.rect.collidepoint(mx, my)
@@ -101,19 +118,42 @@ class Main:
     def run(self) -> None:
         while True:
             self.window.fill(Color.BLACK)
+            self.window.blit(self.background,
+                             (
+                                 (SCREEN_WIDTH - self.background.get_width()) / 2,
+                                 (SCREEN_HEIGHT - self.background.get_height()) / 2)
+                             )
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # mouse clicked
+                        self.handle_mouse()
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self.mouse.release()
                     self.handle_mouse()
                 if event.type == pygame.KEYDOWN:
                     self.handle_key_press(event)
 
 
-            self.font.render(f'Day: {self.day}', True, (255, 255, 255), (0, 0))
-            self.font.render(f'{self.stock.name}: ${self.stock.share_value:.2f}', True, (255, 255, 255), (100, 0))
+            if pygame.mouse.get_pressed()[0]:
+                if self.mouse.obj == self.graph:
+                    self.graph.handle_held(self.stock_data)
+
+            self.font.render(
+                f'Day: {self.day}',
+                True,
+                (255, 255, 255),
+                (0, 0)
+            )
+            self.font.render(
+                f'{self.stock.name}: ${self.stock.share_value:.2f}',
+                True,
+                (255, 255, 255),
+                (100, 0)
+            )
 
             for button in self.buttons:
                 button.draw()
