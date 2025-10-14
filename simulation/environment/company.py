@@ -70,15 +70,16 @@ class Company:
 
     @staticmethod
     def __pick_next_char(prev_char: str):
-        if prev_char in CONSONANTS:
-            if random.random() < 0.8:
-                return random.choice(VOWELS)
-            else:
-                return random.choice(CONSONANTS)
-        else:
-            if random.random() < 0.25:
-                return random.choice(VOWELS)
-            else:
-                return random.choice(CONSONANTS)
+        table = ALPHA_TABLE[prev_char]
+        letters = "abcdefghijklmnopqrstuvwxyz"
+        total = sum(table)
+        r = random.random() * total
+
+        d = {i: (letters[i], table[i]) for i in range(26)}
+
+        while r > max([v[1] for v in d.values()]):
+            r -= max(v[1] for v in d.values())
+
+        return sorted(d.values(), key=lambda x: x[1], reverse=True)[0][0].upper()
 
 
