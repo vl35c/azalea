@@ -20,15 +20,15 @@ class TextInput(Interactor):
 
         self.__buttons = []
 
-    def activate(self):
+    def activate(self) -> None:
         self.active = True
 
-    def deactivate(self):
+    def deactivate(self) -> None:
         self.text = ""
         self.active = False
         self.__buttons = []
 
-    def handle_key_press(self, key):
+    def handle_key_press(self, key) -> list[Button]:
         if key == pygame.K_BACKSPACE:
             self.remove_char()
         else:
@@ -37,7 +37,7 @@ class TextInput(Interactor):
         return self.on_type()
 
 
-    def on_type(self):
+    def on_type(self) -> list[Button]:
         option_list = self.on_input_list_update(self.text)
         self.__buttons = []
         start_y = self.y + self.height + 5
@@ -49,7 +49,7 @@ class TextInput(Interactor):
                                   self.bg_color, text=option, func=button_functions(option)))
         return self.__buttons
 
-    def remove_char(self):
+    def remove_char(self) -> None:
         self.text = self.text[:-1]
 
     def __offset_text(self, text_object: str) -> tuple[int, int]:
@@ -62,7 +62,7 @@ class TextInput(Interactor):
 
     def render(self) -> None:
         if not self.active:
-            self.font.render(self.placeholder, True, Color.GREY, self._centred_text(self.placeholder))
+            self.font.render(self.placeholder, True, Color.GREY, self._centered_text(self.placeholder))
             return
 
         self.font.render(self.text, True, self.text_color, self.__offset_text(self.text))
