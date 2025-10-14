@@ -137,7 +137,7 @@ An interactor is an input that the user is able to interact with.
 `y` - y position of the top left of the interactor
 
 ### METHODS
-`__centered_text(self, text_object: str) -> tuple[int, int]` - returns the position to place text so that it is centered in the interactor\
+`_centered_text(self, text_object: str) -> tuple[int, int]` - returns the position to place text so that it is centered in the interactor\
 \
 `text_object` - string to be centered
 
@@ -196,12 +196,12 @@ TextInput allows the user to input text into a custom interactor
 `deactivate(self)` - sets the button's state to inactive and resets some other fields
 
 ---
-`handle_key_press(self, key)` - takes in a pressed key and handles it\
+`handle_key_press(self, key) -> list[Button]` - takes in a pressed key and handles it\
 \
 `key` - either a pygame.K_BACKSPACE, or a character to be typed
 
 ---
-`on_type(self)` - appends the users input to the text property and then calls the `on_inputlist_update` function 
+`on_type(self) -> list[Button]` - appends the users input to the text property and then calls the `on_inputlist_update` function 
 
 ---
 `render(self)` - draws the text input interactor

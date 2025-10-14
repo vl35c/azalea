@@ -139,7 +139,7 @@ class Graph:
             # when dragging ensure neither end of the dragged graph can be outwith the bounds
             start_position = self.__clamp(0, GRAPH_WIDTH // CANDLE_SPACING, start_position)
             end_position = self.__clamp(0, GRAPH_WIDTH // CANDLE_SPACING, end_position)
-            width = (end_position - start_position) * CANDLE_SPACING
+            width = (end_position - start_position) * CANDLE_SPACING - 2
 
         rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.window, Color.LIGHT_GREY, rect, 0, GRAPH_CORNER_ROUNDING)

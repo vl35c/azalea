@@ -34,7 +34,7 @@ class Interactor:
         return self._func()
 
     # calculate position to center text in button
-    def __centred_text(self, text_object: str) -> tuple[int, int]:
+    def _centered_text(self, text_object: str) -> tuple[int, int]:
         text_object = self.font.string_to_surface(text_object)
 
         x = self.x + (self.width - text_object.get_width()) // 2
@@ -48,4 +48,4 @@ class Interactor:
 
     # render text on button
     def render(self) -> None:
-        self.font.render(self.text, True, self.text_color, self.__centred_text(self.text))
+        self.font.render(self.text, True, self.text_color, self._centered_text(self.text))
