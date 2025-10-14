@@ -7,8 +7,9 @@ from simulation.stock_list import StockList
 from render.graph import Graph
 from render.font import Font
 from render.button import Button
-from input.mouse_handler import MouseHandler
 from render.textinput import TextInput
+from input.mouse_handler import MouseHandler
+from input.keyboard_handler import KeyboardHandler
 
 
 class StockData:
@@ -29,6 +30,10 @@ class Main:
         self.background = pygame.image.load("assets/images/azalea-logo-dark.png").convert_alpha()
         self.background.set_alpha(30)
         self.background = pygame.transform.smoothscale_by(self.background, 0.75)
+
+        # handlers
+        self.mouse = MouseHandler()
+        self.keyboard = KeyboardHandler()
 
         # stocks
         self.stock_list = StockList()
@@ -51,12 +56,18 @@ class Main:
                       "Search Stock", self.stock_list.select_stocks, self.change_stock)
         ]
 
+        self.__init_handlers()
+
         # graph
-        self.mouse = MouseHandler()
         self.graph = Graph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT, self.mouse)
 
         # misc.
         self.font = Font()
+
+    # attach handlers onto interactors
+    def __init_handlers(self):
+        for text_input in self.text_inputs:
+            text_input.set_keyboard_handler(self.keyboard)
 
     def tick(self) -> None:
         for stock in self.stock_list.stock_list:
@@ -91,21 +102,11 @@ class Main:
                 self.text_input_buttons = []
 
     def handle_key_press(self, event) -> None:
-        if (text_input := self.find_active_text_input()) is None:
-            return
-
-        if event.key == pygame.K_BACKSPACE:
-            self.text_input_buttons = text_input.handle_key_press(pygame.K_BACKSPACE)
-
-        if event.unicode.isalpha() or event.unicode.isnumeric():
-            letter = event.unicode
-            self.text_input_buttons = text_input.handle_key_press(letter)
-
-    def find_active_text_input(self) -> TextInput | None:
-        for text_input in self.text_inputs:
-            if text_input.active:
-                return text_input
-        return None
+        for child in self.keyboard.children:
+            if child.active:
+                self.keyboard.key_down_with_child(event, child)
+                self.text_input_buttons = child.get_buttons()
+                break
 
     def change_stock(self, stock: str) -> None:
         if (stock_str_arr := self.stock_list.select_stocks(stock)) is not None:
@@ -151,19 +152,19 @@ class Main:
                 (100, 0)
             )
 
-            for button in self.buttons:
-                button.draw()
-                button.render()
+            for obj in self.buttons:
+                obj.draw()
+                obj.render()
 
-            for text_input in self.text_inputs:
-                text_input.draw()
-                text_input.render()
+            for obj in self.text_inputs:
+                obj.draw()
+                obj.render()
 
             self.graph.draw(self.stock_data)
 
-            for button in self.text_input_buttons:
-                button.draw()
-                button.render()
+            for obj in self.text_input_buttons:
+                obj.draw()
+                obj.render()
 
             pygame.display.flip()
 

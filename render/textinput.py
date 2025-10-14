@@ -5,20 +5,27 @@ from typing import Callable
 from settings import *
 from render.interactor import Interactor
 from render.button import Button
+from input.keyboard_handler import KeyboardHandler
 
 
 class TextInput(Interactor):
     def __init__(self, x: int, y: int, width: int, height: int, radius: int, text_color: str, bg_color: str, placeholder: str,
-                 on_input_list_update: Callable[[str], list[str]], button_func: Callable[[str], None]):
-        # when the user types in the input box, calls this function to return a new list of recommended options
+                 input_func: Callable[[str], list[str]], button_func: Callable[[str], None]):
         super().__init__(x, y, width, height, radius, text_color, bg_color, text="")
 
-        self.on_input_list_update = on_input_list_update
+        # when the user types in the input box, calls this function to return a new list of recommended options
+        self.input_func = input_func
         self.placeholder = placeholder
         self.active = False
         self.button_func = button_func
 
         self.__buttons = []
+
+        self.keyboard = None
+
+    def set_keyboard_handler(self, keyboard: KeyboardHandler) -> None:
+        self.keyboard = keyboard
+        self.keyboard.add_child(self)
 
     def activate(self) -> None:
         self.active = True
@@ -28,25 +35,26 @@ class TextInput(Interactor):
         self.active = False
         self.__buttons = []
 
-    def handle_key_press(self, key) -> list[Button]:
-        if key == pygame.K_BACKSPACE:
+    def key_down(self, event) -> None:
+        if event.key == pygame.K_BACKSPACE:
             self.remove_char()
         else:
-            self.text += key
+            self.text += event.unicode
 
-        return self.on_type()
+        self.on_type()
 
-
-    def on_type(self) -> list[Button]:
-        option_list = self.on_input_list_update(self.text)
+    def on_type(self) -> None:
+        option_list = self.input_func(self.text)
         self.__buttons = []
-        start_y = self.y + self.height + 5
+        y = self.y + self.height + 5
 
         # double lambda function to get around for-loop and lambda functions not getting along
         button_functions = lambda val: lambda: self.button_func(val)
         for i, option in enumerate(option_list):
-            self.__buttons.append(Button(self.x, start_y + 40 * i, self.width, 40, 0, self.text_color,
+            self.__buttons.append(Button(self.x, y + 40 * i, self.width, 40, 0, self.text_color,
                                   self.bg_color, text=option, func=button_functions(option)))
+
+    def get_buttons(self) -> list[Button]:
         return self.__buttons
 
     def remove_char(self) -> None:
