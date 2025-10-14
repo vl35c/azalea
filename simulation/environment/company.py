@@ -71,15 +71,15 @@ class Company:
     @staticmethod
     def __pick_next_char(prev_char: str):
         table = ALPHA_TABLE[prev_char]
-        letters = "abcdefghijklmnopqrstuvwxyz"
-        total = sum(table)
-        r = random.random() * total
+        letters = string.ascii_uppercase
+        position = random.random() * sum(table)  # generate a random number in the distribution of characters
 
-        d = {i: (letters[i], table[i]) for i in range(26)}
+        char_dict = {i: (letters[i], table[i]) for i in range(len(ALPHA_TABLE))}
+        
+        while position > (m := max([v[1] for v in char_dict.values()])):  # loop until found position of number
+            position -= m
 
-        while r > max([v[1] for v in d.values()]):
-            r -= max(v[1] for v in d.values())
+            char_dict.pop(max(char_dict, key=lambda k: char_dict[k][1]))  # remove letter starting from most common
 
-        return sorted(d.values(), key=lambda x: x[1], reverse=True)[0][0].upper()
-
+        return sorted(char_dict.values(), key=lambda x: x[1], reverse=True)[0][0]  # return most populous character left
 
