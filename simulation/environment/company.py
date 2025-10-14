@@ -31,6 +31,7 @@ class Company:
     countries = [
         "UK",
         "USA",
+        "CANADA",
         "CHINA",
         "RUSSIA",
         "GERMANY",
