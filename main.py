@@ -32,8 +32,8 @@ class Main:
 
         # stocks
         self.stock_list = StockList()
-        self.stock_list.load_stocks("assets/data/stocks.csv")
-        self.stock = self.stock_list.select_stock("NASDAQ")
+        self.stock_list.generate_stocks(50)
+        self.stock = self.stock_list.stock_list[0]
         self.day = 0
         self.stock_data = StockData(self.day, self.stock)
 

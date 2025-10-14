@@ -3,12 +3,13 @@ from typing import Self
 from simulation.variance import Variance
 
 class Stock:
-    def __init__(self, name: str, share_value: float, total_shares: int):
+    def __init__(self, name: str, country: str, sector: str, share_value: float, total_shares: int):
         self.name = name
+        self.country = country
+        self.sector = sector
         self.share_value = share_value
         self.total_shares = total_shares
         # key: date, value: (closing, low, high)
-        # also uses day -1 to start simulation with a value
         self.historic_price: dict[int: ShareData] = {}
         # bound stores the ceiling and floor values for the graph to contain the values
         self.bound: ShareData = ShareData.from_high_low(int(share_value / 2), int(share_value * 2))
@@ -53,6 +54,9 @@ class Stock:
 
         self.bound.ceiling = int(self.all_time.high * HIGH_FACTOR)
         self.bound.floor = int(self.all_time.low * LOW_FACTOR)
+
+    def get_market_cap(self) -> float:
+        return self.share_value * self.share_value
 
 
 class ShareData:

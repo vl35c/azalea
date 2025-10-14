@@ -2,11 +2,15 @@ import csv
 from typing import Any
 
 from simulation.stock import Stock
+from simulation.environment.company import Company
 
 
 class StockList:
     def __init__(self):
         self.stock_list: list[Stock] = []
+
+    def generate_stocks(self, count: int) -> None:
+        self.stock_list = [Company.generate_stock() for _ in range(count)]
 
     def load_stocks(self, filename: str):
         with open(filename, newline='') as csvfile:
@@ -15,7 +19,7 @@ class StockList:
                 self.add_stock(row['Name'], float(row['Share Value']), int(row['Total Shares']))
 
     def add_stock(self, name: str, share_value: float, total_shares: int) -> None:
-        self.stock_list.append(Stock(name, share_value, total_shares))
+        self.stock_list.append(Stock(name, "", "", share_value, total_shares))
 
     def stock_names(self) -> list[str]:
         return [stock.name for stock in self.stock_list]

@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7874d1f4-0940-40d4-ad5b-d1823679b92c" name="Changes" comment="refactoring, and bug fixed">
+    <list default="true" id="7874d1f4-0940-40d4-ad5b-d1823679b92c" name="Changes" comment="Added opening price to StockData">
+      <change afterPath="$PROJECT_DIR$/simulation/environment/company.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/simulation/environment/events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/stock-sim.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/stock-sim.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/data/stocks.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/render/graph.py" beforeDir="false" afterPath="$PROJECT_DIR$/render/graph.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/render/interactor.py" beforeDir="false" afterPath="$PROJECT_DIR$/render/interactor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/render/textinput.py" beforeDir="false" afterPath="$PROJECT_DIR$/render/textinput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simulation/stock.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/stock.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/simulation/stock_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/simulation/stock_list.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,11 +30,10 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="textinput" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="SET_USER_NAME_GLOBALLY" value="false" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -45,6 +47,9 @@
     &quot;accountId&quot;: &quot;ad5ae206-d0e6-49a0-ad7e-05560d7d4672&quot;
   }
 }</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -59,32 +64,24 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.graph.executor": "Run",
     "Python.main.executor": "Run",
     "Python.settings.executor": "Run",
-    "Python.stock.executor": "Run",
+    "Python.stock_list.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/Lewis/PycharmProjects/stock-sim/assets",
+    "git-widget-placeholder": "environment-based-random",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Lewis\PycharmProjects\stock-sim\assets" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-      <recent name="C:\Users\Lewis\PycharmProjects\stock-sim\assets\data" />
-      <recent name="C:\Users\Lewis\PycharmProjects\stock-sim\assets\images" />
-      <recent name="C:\Users\Lewis\PycharmProjects\stock-sim\assets" />
+      <recent name="C:\Users\callu\OneDrive\Desktop\Code\python\stock-sim" />
     </key>
   </component>
   <component name="RunManager">
@@ -97,12 +94,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="main.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -115,8 +112,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-PY-251.26094.141" />
-        <option value="bundled-python-sdk-9f8e2b94138c-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26094.141" />
+        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
       </set>
     </attachedChunks>
   </component>
@@ -128,18 +124,13 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1758637514971</updated>
-      <workItem from="1758637515970" duration="1295000" />
-      <workItem from="1758803377931" duration="7435000" />
-      <workItem from="1758885177017" duration="1119000" />
-      <workItem from="1759507117724" duration="7141000" />
-      <workItem from="1759520497986" duration="6729000" />
-      <workItem from="1759749833364" duration="70000" />
-      <workItem from="1759750085709" duration="3000" />
-      <workItem from="1759750090635" duration="1887000" />
-      <workItem from="1759919799313" duration="3328000" />
-      <workItem from="1760037129846" duration="3733000" />
-      <workItem from="1760095111980" duration="4547000" />
-      <workItem from="1760346267522" duration="5437000" />
+      <workItem from="1758637515970" duration="1337000" />
+      <workItem from="1758713599519" duration="306000" />
+      <workItem from="1758713954130" duration="929000" />
+      <workItem from="1758803584247" duration="199000" />
+      <workItem from="1758807981348" duration="28000" />
+      <workItem from="1760019846117" duration="7752000" />
+      <workItem from="1760041259270" duration="390000" />
     </task>
     <task id="LOCAL-00001" summary="init commit">
       <option name="closed" value="true" />
@@ -173,141 +164,39 @@
       <option name="project" value="LOCAL" />
       <updated>1758638642187</updated>
     </task>
-    <task id="LOCAL-00005" summary="added stock history and allowed stock price to manually be changed">
+    <task id="LOCAL-00005" summary="stock file added">
       <option name="closed" value="true" />
-      <created>1758804775948</created>
+      <created>1758638841779</created>
       <option name="number" value="00005" />
       <option name="presentableId" value="LOCAL-00005" />
       <option name="project" value="LOCAL" />
-      <updated>1758804775948</updated>
+      <updated>1758638841779</updated>
     </task>
-    <task id="LOCAL-00006" summary="Added daily low and high">
+    <task id="LOCAL-00006" summary="Added opening price to StockData">
       <option name="closed" value="true" />
-      <created>1758886079979</created>
+      <created>1760022326849</created>
       <option name="number" value="00006" />
       <option name="presentableId" value="LOCAL-00006" />
       <option name="project" value="LOCAL" />
-      <updated>1758886079979</updated>
+      <updated>1760022326849</updated>
     </task>
-    <task id="LOCAL-00007" summary="added graph function and mapped candle chart to go the correct way">
-      <option name="closed" value="true" />
-      <created>1758888245194</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1758888245194</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Replaced closing, low, high tuple to DayShare class">
-      <option name="closed" value="true" />
-      <created>1758889579830</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1758889579830</updated>
-    </task>
-    <task id="LOCAL-00009" summary="refactored Button into own class, created custom Font class">
-      <option name="closed" value="true" />
-      <created>1759494155639</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1759494155639</updated>
-    </task>
-    <task id="LOCAL-00010" summary="refactoring and commenting">
-      <option name="closed" value="true" />
-      <created>1759510736070</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1759510736070</updated>
-    </task>
-    <task id="LOCAL-00011" summary="added renderer to non linearly render graphics">
-      <option name="closed" value="true" />
-      <created>1760022637491</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1760022637491</updated>
-    </task>
-    <task id="LOCAL-00012" summary="changed stock data to a floating box + refactoring">
-      <option name="closed" value="true" />
-      <created>1760027211003</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1760027211003</updated>
-    </task>
-    <task id="LOCAL-00013" summary="drag graph to select multiple days">
-      <option name="closed" value="true" />
-      <created>1760092994091</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1760092994091</updated>
-    </task>
-    <task id="LOCAL-00014" summary="WIP dragging values, still has a few bugs">
-      <option name="closed" value="true" />
-      <created>1760099355769</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1760099355769</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Merge branch 'master' into textinput&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;main.py&#10;#&#9;simulation/stock_list.py">
-      <option name="closed" value="true" />
-      <created>1760355921904</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1760355921904</updated>
-    </task>
-    <task id="LOCAL-00016" summary="refactoring, and bug fixed">
-      <option name="closed" value="true" />
-      <created>1760357514670</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1760357514670</updated>
-    </task>
-    <option name="localTasksCounter" value="17" />
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init commit" />
     <MESSAGE value="window running" />
     <MESSAGE value="callum did not allow an enum for colors" />
-    <MESSAGE value="added stock history and allowed stock price to manually be changed" />
-    <MESSAGE value="Added daily low and high" />
-    <MESSAGE value="added graph function and mapped candle chart to go the correct way" />
-    <MESSAGE value="Replaced closing, low, high tuple to DayShare class" />
-    <MESSAGE value="refactored Button into own class, created custom Font class" />
-    <MESSAGE value="refactoring and commenting" />
-    <MESSAGE value="added renderer to non linearly render graphics" />
-    <MESSAGE value="changed stock data to a floating box + refactoring" />
-    <MESSAGE value="drag graph to select multiple days" />
-    <MESSAGE value="WIP dragging values, still has a few bugs" />
-    <MESSAGE value="refactoring, and bug fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactoring, and bug fixed" />
+    <MESSAGE value="stock file added" />
+    <MESSAGE value="Added opening price to StockData" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added opening price to StockData" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/stock_sim$stock.coverage" NAME="stock Coverage Results" MODIFIED="1758887670486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stock_sim$stock_list.coverage" NAME="stock_list Coverage Results" MODIFIED="1760027084286" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/simulation" />
-    <SUITE FILE_PATH="coverage/stock_sim$main.coverage" NAME="main Coverage Results" MODIFIED="1760360883577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/stock_sim$main.coverage" NAME="main Coverage Results" MODIFIED="1760449344574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stock_sim$settings.coverage" NAME="settings Coverage Results" MODIFIED="1758638390261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/stock_sim$graph.coverage" NAME="graph Coverage Results" MODIFIED="1758887732887" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
