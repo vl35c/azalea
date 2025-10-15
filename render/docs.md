@@ -91,6 +91,17 @@ A graph is a chart which allows users to be able to visualise stock data on a ca
 `stock_data` - contains data about stocks, and current day
 
 ---
+`draw_line(self, value: int, stock_data)` - draws single line from `draw_lines` function\
+\
+`value`: value to be mapped and drawn onto the graph\
+`stock_data` - contains data about stocks, and current day
+
+---
+`draw_lines(self, stock_data)` - draws pricing guidance lines on the graph\
+\
+`stock_data` - contains data about stocks, and current day
+
+---
 `handle_held(self, stock_data)` - called when the mouse is held on the graph, and calls functions to highlight and display pricing data for the selected period of time\
 \
 `stock_data` - contains data about stocks, and current day
