@@ -62,6 +62,7 @@ class Graph:
         self.renderer.hold(lambda: self.draw_base(), 0)
         self.hover(stock_data)
         self.renderer.hold(lambda: self.draw_data(stock_data), 2)
+        self.renderer.hold(lambda: self.draw_lines(stock_data), 1)
 
         self.renderer.call()
 
@@ -70,6 +71,36 @@ class Graph:
 
     def draw_data(self, stock_data) -> None:
         self.candle(stock_data)
+
+    def draw_lines(self, stock_data) -> None:
+        if stock_data.day == 0:
+            return
+
+        high = stock_data.stock.bound.ceiling
+        low = stock_data.stock.bound.floor
+
+        top_quarter = ((high - low) / 4) * 3 + low
+        middle = (high - low) / 2 + low
+        bottom_quarter = (high - low) / 4 + low
+
+        self.draw_line(top_quarter, stock_data)
+        self.draw_line(middle, stock_data)
+        self.draw_line(bottom_quarter, stock_data)
+
+    def draw_line(self, value: float, stock_data) -> None:
+        y = self.map(
+            stock_data.stock.bound.floor,
+            stock_data.stock.bound.ceiling,
+            GRAPH_HEIGHT + GRAPH_Y,
+            GRAPH_Y,
+            int(value)
+        )
+
+        start = (GRAPH_X, y)
+        end = (GRAPH_X + GRAPH_WIDTH, y)
+
+        pygame.draw.line(self.window, Color.LIGHT_GREY, start, end)
+        self.font.render(str(value), True, Color.LIGHT_GREY, self.__add_tuples(start, (5, 0)))
 
     def candle(self, stock_data) -> None:
         max_candles = int(GRAPH_WIDTH / CANDLE_SPACING)
