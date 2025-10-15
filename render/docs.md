@@ -141,7 +141,7 @@ An interactor is an input that the user is able to interact with.
 `radius` - corner radius of the interactor\
 `rect` - the pygame.Rect encompassing the interactor\
 `text` - string to be rendered on the interactor\
-`text-color` - color of the string to be rendered on the interactor\
+`text_color` - color of the string to be rendered on the interactor\
 `width` - width of the interactor\
 `window` - the global window that the program uses\
 `x` - x position of the top left of the interactor\
@@ -192,6 +192,8 @@ TextInput allows the user to input text into a custom interactor
 `__buttons` - list of buttons which gets populated when using the text input\
 `active` - boolean showing whether the text box is active or not\
 `button_func` - the function that the buttons created when using the text input call\
+`input_func` - the function called when the text input is changed\
+`keyboard` - the local KeyboardHandler\
 `on_input_list_update` - function which is called when the input is updated\
 `placeholder` - placeholder text that shows when the text input is not active
 

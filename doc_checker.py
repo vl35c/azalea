@@ -3,11 +3,12 @@ import re
 
 
 class File:
-    def __init__(self, class_: str, inherited_class: str, attrs: list[str], methods: list[str]):
+    def __init__(self, class_: str, inherited_class: str, attrs: list[str], methods: list[str], path: str):
         self.class_ = class_
         self.inherited_class = inherited_class
         self.attrs = attrs
         self.methods = methods
+        self.path = path
 
 
 code_files = {}
@@ -20,6 +21,10 @@ def check_files():
         for file in code_files[folder]:
             with open(os.path.join(folder, file), 'r') as f:
                 data = f.read()
+                
+                if "#!ignore" in data:
+                    continue
+
                 data = data.split("class")[1]
 
                 _class = re.findall("([a-zA-Z0-9_]+)", data)[0]
@@ -47,7 +52,7 @@ def check_files():
                 else:
                     inherited_class = None
 
-                files.update({_class: File(_class, inherited_class, properties, methods)})
+                files.update({_class: File(_class, inherited_class, properties, methods, folder)})
 
 def check_folder(path: str):
     for _dir in os.listdir(path):
@@ -76,14 +81,27 @@ def remove_inherited_traits():
                 if method in file.methods:
                     file.methods.remove(method)
 
-        print(file.__dict__)
+def find_in_docs():
+    for name, file in files.items():
+        with open(f'{file.path}/{doc_files[file.path]}', 'r') as f:
+            data = f.read()
+
+            for attr in file.attrs:
+                if attr not in data:
+                    print(f"#DOCS: attr   \x1b[1;31m[{name}.{attr}]\x1b[0;39m not found!")
+
+            for method in file.methods:
+                if method not in data:
+                    print(f"#DOCS: method \x1b[1;31m[{name}.{method}()]\x1b[0;39m not found!")
 
 def validate() -> None:
     path = os.getcwd()
     check_folder(path)
 
-    code_files.pop('/home/xrb23140/PycharmProjects/stock-sim')
-    doc_files.pop('/home/xrb23140/PycharmProjects/stock-sim')
+    code_files.pop(path)
+    doc_files.pop(path)
 
     check_files()
     remove_inherited_traits()
+
+    find_in_docs()

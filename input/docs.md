@@ -1,3 +1,18 @@
+# KeyboardHandler
+
+The KeyboardHandler deals with keyboard input, sending it to the required functions
+
+### PROPERTIES
+`children` - the objects that the KeyboardHandler is working with
+
+### METHODS
+`add_child(self, obj: Any)` - adds an object to the list of children
+
+---
+`key_down_with_child(event, child: Any)` - takes a key input and calls the child to handle the event
+
+---
+
 # MouseHandler
 
 The MouseHandler deals with mouse input, currently only the holding of the mouse

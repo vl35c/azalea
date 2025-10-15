@@ -1,3 +1,4 @@
+#!ignore
 from simulation.stock import Stock
 
 

@@ -59,6 +59,9 @@ StockList is a list of stocks
 `user_input` - the string to be searched for
 
 ---
+`stock_names(self) -> list[str]` - returns a list of the name of the stocks
+
+---
 
 # VARIANCE
 
