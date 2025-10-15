@@ -61,8 +61,8 @@ class Graph:
     def draw(self, stock_data) -> None:
         self.renderer.hold(lambda: self.draw_base(), 0)
         self.hover(stock_data)
-        self.renderer.hold(lambda: self.draw_data(stock_data), 2)
         self.renderer.hold(lambda: self.draw_lines(stock_data), 1)
+        self.renderer.hold(lambda: self.draw_data(stock_data), 2)
 
         self.renderer.call()
 
@@ -100,7 +100,7 @@ class Graph:
         end = (GRAPH_X + GRAPH_WIDTH, y)
 
         pygame.draw.line(self.window, Color.LIGHT_GREY, start, end)
-        self.font.render(str(value), True, Color.LIGHT_GREY, self.__add_tuples(start, (5, 0)))
+        self.font.render(str(value), True, Color.LIGHT_GREY, self.__add_tuples(start, (5, -20)))
 
     def candle(self, stock_data) -> None:
         max_candles = int(GRAPH_WIDTH / CANDLE_SPACING)
@@ -175,7 +175,7 @@ class Graph:
         rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.window, Color.LIGHT_GREY, rect, 0, GRAPH_CORNER_ROUNDING)
 
-    def __candle_data_calculate(self, stock_data, days: list[int]) -> None:
+    def __candle_data_calculate(self, stock_data, days: list[int]):
         days = [day + max(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, 0) for day in days]
         # filter days to only contain columns whose key values exist in stock_data
         days = list(set(

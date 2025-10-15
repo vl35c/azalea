@@ -1,6 +1,6 @@
 # Font
 
-Font overrides pygame's own font class, extending it's functionality to be able to render and draw in 1 function call, increasing code neatness.
+Font overrides pygame's own font class, extending its functionality to be able to render and draw in 1 function call, increasing code neatness.
 
 ### PROPERTIES:
 `font` - the font face that the class uses\
@@ -93,7 +93,7 @@ A graph is a chart which allows users to be able to visualise stock data on a ca
 ---
 `draw_line(self, value: int, stock_data)` - draws single line from `draw_lines` function\
 \
-`value`: value to be mapped and drawn onto the graph\
+`value` - value to be mapped and drawn onto the graph\
 `stock_data` - contains data about stocks, and current day
 
 ---

@@ -1,6 +1,8 @@
 import sys
 import pygame
 
+import doc_checker
+
 from settings import *
 from simulation.stock import Stock
 from simulation.stock_list import StockList
@@ -8,6 +10,8 @@ from render.graph import Graph
 from render.font import Font
 from render.button import Button
 from render.textinput import TextInput
+from render.interactor import Interactor
+from render.renderer import Renderer
 from input.mouse_handler import MouseHandler
 from input.keyboard_handler import KeyboardHandler
 
@@ -34,6 +38,7 @@ class Main:
         # handlers
         self.mouse = MouseHandler()
         self.keyboard = KeyboardHandler()
+        self.renderer = Renderer()
 
         # stocks
         self.stock_list = StockList()
@@ -68,6 +73,11 @@ class Main:
     def __init_handlers(self):
         for text_input in self.text_inputs:
             text_input.set_keyboard_handler(self.keyboard)
+
+    @staticmethod
+    def display_all(obj_list: list[Interactor]):
+        for obj in obj_list:
+            obj.display()
 
     def tick(self) -> None:
         for stock in self.stock_list.stock_list:
@@ -142,33 +152,27 @@ class Main:
             self.font.render(
                 f'Day: {self.day}',
                 True,
-                (255, 255, 255),
+                Color.WHITE,
                 (0, 0)
             )
             self.font.render(
                 f'{self.stock.name}: ${self.stock.share_value:.2f}',
                 True,
-                (255, 255, 255),
+                Color.WHITE,
                 (100, 0)
             )
 
-            for obj in self.buttons:
-                obj.draw()
-                obj.render()
+            self.renderer.hold(lambda: self.display_all(self.buttons), 0)
+            self.renderer.hold(lambda: self.display_all(self.text_inputs), 0)
+            self.renderer.hold(lambda: self.display_all(self.text_input_buttons), 2)
+            self.renderer.hold(lambda: self.graph.draw(self.stock_data), 1)
 
-            for obj in self.text_inputs:
-                obj.draw()
-                obj.render()
-
-            self.graph.draw(self.stock_data)
-
-            for obj in self.text_input_buttons:
-                obj.draw()
-                obj.render()
+            self.renderer.call()
 
             pygame.display.flip()
 
 
 if __name__ == '__main__':
     main = Main()
+    doc_checker.validate()
     main.run()

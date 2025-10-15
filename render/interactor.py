@@ -49,3 +49,8 @@ class Interactor:
     # render text on button
     def render(self) -> None:
         self.font.render(self.text, True, self.text_color, self._centered_text(self.text))
+
+    # draws and renders in 1 call
+    def display(self) -> None:
+        self.draw()
+        self.render()
