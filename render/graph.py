@@ -93,7 +93,7 @@ class Graph:
             stock_data.stock.bound.ceiling,
             GRAPH_HEIGHT + GRAPH_Y,
             GRAPH_Y,
-            int(value)
+            value
         )
 
         start = (GRAPH_X, y)
@@ -160,7 +160,7 @@ class Graph:
 
     # draws a background behind a candle to indicate which one is hovered
     # end position is -1 by default, signalling a single bar highlighted
-    def highlight_candle(self, start_position: int, end_position: int=-1) -> None:
+    def highlight_candle(self, start_position: int, end_position: int = -1) -> None:
         x = max(GRAPH_X + start_position * CANDLE_SPACING, GRAPH_X)
         y = GRAPH_Y
         height = GRAPH_HEIGHT

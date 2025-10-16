@@ -16,6 +16,7 @@ doc_files = {}
 
 files = {}
 
+
 def check_files():
     for folder in code_files:
         for file in code_files[folder]:
@@ -54,6 +55,7 @@ def check_files():
 
                 files.update({_class: File(_class, inherited_class, properties, methods, folder)})
 
+
 def check_folder(path: str):
     for _dir in os.listdir(path):
         if _dir.startswith('.') or _dir.startswith('__'):
@@ -70,6 +72,7 @@ def check_folder(path: str):
         if file.endswith('.md'):
             doc_files[path] = file
 
+
 def remove_inherited_traits():
     for name, file in files.items():
         if file.inherited_class is not None:
@@ -80,6 +83,7 @@ def remove_inherited_traits():
             for method in files[file.inherited_class].methods:
                 if method in file.methods:
                     file.methods.remove(method)
+
 
 def find_in_docs():
     for name, file in files.items():
@@ -94,6 +98,174 @@ def find_in_docs():
                 if method not in data:
                     print(f"#DOCS: method \x1b[1;31m[{name}.{method}()]\x1b[0;39m not found!")
 
+
+class Program:
+    def __init__(self):
+        self.files = {}
+
+
+class PythonFile:
+    def __init__(self, name: str, path: str):
+        self.name = name
+        self.path = path
+        self.classes = {}
+
+
+class DocFile:
+    def __init__(self, path):
+        self.path = path
+        self.classes = {}
+
+
+class Class:
+    def __init__(self, name: str):
+        self.name = name
+        self.attrs = {}
+        self.methods = {}
+
+
+class Method:
+    def __init__(self, name: str, static_: bool = False, prop: bool = False):
+        self.name = name
+        self.static = static_
+        self.prop = prop
+        self.params = {}
+        self.code = ""
+
+
+class Attr:
+    def __init__(self, name: str, type_: str = None):
+        self.name = name
+        self.type_ = type_
+
+
+prop = False
+static = False
+
+
+def parse_python_file(program):
+    current_class = Class("None")
+    current_method = Method("None")
+    global prop, static
+
+    for folder in code_files:
+        for file_ in code_files[folder]:
+            path = f"{folder}/{file_}"
+
+            with open(path, "r") as file:
+                current_file = PythonFile(file_, folder)
+                data = file.read()
+                prop = False
+
+                for line in data.split("\n"):
+                    line = line.strip()
+
+                    if line.startswith("@property"):
+                        prop = True
+                    if line.startswith("@staticmethod"):
+                        static = True
+                    if line.startswith("class"):
+                        current_class = Class(re.findall("class ([a-zA-Z0-9_]+)", line)[0])
+                        current_file.classes[current_class.name] = current_class
+                    if line.startswith("def"):
+                        current_method_name = re.findall("def ([a-zA-Z0-9_]+)", line)[0]
+                        if not prop:
+                            if current_method_name == "__init__":
+                                continue
+                            current_method = Method(current_method_name, static_=static, prop=prop)
+                            current_class.methods[current_method.name] = current_method
+
+                            params = re.findall(
+                                "(?:[^:>] |\\()(\\w+)",
+                                line.split(current_method.name)[1]
+                            )
+
+                            for param in params:
+                                if param in ["int", "str", "tuple", "list", "dict", "float", "char"]:
+                                    break
+                                current_class.methods[current_method.name].params[param] = Attr(param)
+                                try:
+                                    type_ = re.findall(f"{param}: ([\\w\\[\\]| ,]+)[,)]", line)[0]
+                                    current_class.methods[current_method.name].params[param].type_ = type_
+                                except IndexError:
+                                    pass
+
+                            static = False
+                            prop = False
+                    elif "self." in line:
+                        try:
+                            attr = re.findall("self.([a-zA-Z0-9_]+)(?=[ =:]|$)", line)[0]
+                            current_class.attrs[attr] = Attr(attr)
+                        except IndexError:
+                            pass
+
+                    current_method.code += line + "\n"
+            program.files[current_file.name] = current_file
+
+
+def parse_md_file(program):
+    current_class = Class("None")
+    properties = True
+
+    for file_ in doc_files:
+        path = f"{file_}/{doc_files[file_]}"
+
+        current_file = DocFile(file_)
+
+        with open(path, "r") as file:
+            data = file.read()
+
+            for line in data.split("\n"):
+                if line.startswith("# "):
+                    current_class = Class(re.findall("\\w+", line)[0])
+                    current_file.classes[current_class.name] = current_class
+                if "### PROPERTIES" in line:
+                    properties = True
+                if "### METHODS" in line:
+                    properties = False
+                if line.startswith("`"):
+                    try:
+                        name = re.findall("`([\\w_]+)`", line)[0]
+                        if properties:
+                            current_class.attrs[name] = Attr(name)
+                        else:
+                            current_class.methods[name] = Method(name)
+                    except IndexError:
+                        pass
+
+        program.files[current_file.path] = current_file
+
+
+def compare_files(program):
+    for file1 in program.files:
+        for file2 in program.files:
+            if program.files[file1].path == file2:
+                code = program.files[file1]
+                docs = program.files[file2]
+
+                if type(code) is DocFile:
+                    continue
+
+                classes_to_pop = []
+
+                for c in code.classes:
+                    if c not in docs.classes:
+                        print(c)
+                        classes_to_pop.append(c)
+
+                for c in classes_to_pop:
+                    code.classes.pop(c)
+
+                for c in code.classes:
+                    for attr in code.classes[c].attrs:
+                        if attr not in docs.classes[c].attrs:
+                            print(attr)
+
+                    for method in code.classes[c].methods:
+                        if method not in docs.classes[c].methods:
+                            print(method)
+
+
 def validate() -> None:
     path = os.getcwd()
     check_folder(path)
@@ -104,4 +276,7 @@ def validate() -> None:
     check_files()
     remove_inherited_traits()
 
-    find_in_docs()
+    program = Program()
+    parse_python_file(program)
+    parse_md_file(program)
+    compare_files(program)

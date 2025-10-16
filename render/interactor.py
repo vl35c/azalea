@@ -5,7 +5,7 @@ from render.font import Font
 
 class Interactor:
     def __init__(self, x: int, y: int, width: int, height: int, radius: int, text_color: str, bg_color: str,
-                 text:str = None, func = lambda: None):
+                 text: str = None, func=lambda: None):
         self.x = x
         self.y = y
         self.width = width

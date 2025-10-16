@@ -63,7 +63,7 @@ StockList is a list of stocks
 
 ---
 
-# VARIANCE
+# Variance
 
 Variance is a class which creates a pseudo-random fluctuation for simulating the stocks
 
