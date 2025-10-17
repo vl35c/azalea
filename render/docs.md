@@ -171,7 +171,7 @@ The renderer is used to hold drawing functions that may not be called in the cor
 `held_functions` - list of functions held by the renderer waiting to be called
 
 ### METHODS
-`call(self)` - calls all of the waiting functions in order of their `z` value
+`call(self)` - calls all the waiting functions in order of their `z` value
 
 ---
 `flush(self)` - clears the list of held functions

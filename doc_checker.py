@@ -1,6 +1,8 @@
 import os
 import re
 
+from typing import Self
+
 
 class File:
     def __init__(self, class_: str, inherited_class: str, attrs: list[str], methods: list[str], path: str):
@@ -73,32 +75,6 @@ def check_folder(path: str):
             doc_files[path] = file
 
 
-def remove_inherited_traits():
-    for name, file in files.items():
-        if file.inherited_class is not None:
-            for attr in files[file.inherited_class].attrs:
-                if attr in file.attrs:
-                    file.attrs.remove(attr)
-
-            for method in files[file.inherited_class].methods:
-                if method in file.methods:
-                    file.methods.remove(method)
-
-
-def find_in_docs():
-    for name, file in files.items():
-        with open(f'{file.path}/{doc_files[file.path]}', 'r') as f:
-            data = f.read()
-
-            for attr in file.attrs:
-                if attr not in data:
-                    print(f"#DOCS: attr   \x1b[1;31m[{name}.{attr}]\x1b[0;39m not found!")
-
-            for method in file.methods:
-                if method not in data:
-                    print(f"#DOCS: method \x1b[1;31m[{name}.{method}()]\x1b[0;39m not found!")
-
-
 class Program:
     def __init__(self):
         self.files = {}
@@ -118,17 +94,18 @@ class DocFile:
 
 
 class Class:
-    def __init__(self, name: str):
+    def __init__(self, name: str, inherited_class: Self = None):
         self.name = name
+        self.inherited_class = inherited_class
         self.attrs = {}
         self.methods = {}
 
 
 class Method:
-    def __init__(self, name: str, static_: bool = False, prop: bool = False):
+    def __init__(self, name: str, static_: bool = False, prop_: bool = False):
         self.name = name
         self.static = static_
-        self.prop = prop
+        self.prop = prop_
         self.params = {}
         self.code = ""
 
@@ -165,33 +142,35 @@ def parse_python_file(program):
                     if line.startswith("@staticmethod"):
                         static = True
                     if line.startswith("class"):
-                        current_class = Class(re.findall("class ([a-zA-Z0-9_]+)", line)[0])
+                        if inherited_class := re.findall("\\(([\\w_]+)\\)", line):
+                            inherited_class = inherited_class[0]
+
+                        current_class = Class(re.findall("class ([a-zA-Z0-9_]+)", line)[0], inherited_class=inherited_class)
                         current_file.classes[current_class.name] = current_class
                     if line.startswith("def"):
                         current_method_name = re.findall("def ([a-zA-Z0-9_]+)", line)[0]
-                        if not prop:
-                            if current_method_name == "__init__":
-                                continue
-                            current_method = Method(current_method_name, static_=static, prop=prop)
-                            current_class.methods[current_method.name] = current_method
+                        if current_method_name == "__init__":
+                            continue
+                        current_method = Method(current_method_name, static_=static, prop_=prop)
+                        current_class.methods[current_method.name] = current_method
 
-                            params = re.findall(
-                                "(?:[^:>] |\\()(\\w+)",
-                                line.split(current_method.name)[1]
-                            )
+                        params = re.findall(
+                            "(?:[^:>] |\\()(\\w+)",
+                            line.split(current_method.name)[1]
+                        )
 
-                            for param in params:
-                                if param in ["int", "str", "tuple", "list", "dict", "float", "char"]:
-                                    break
-                                current_class.methods[current_method.name].params[param] = Attr(param)
-                                try:
-                                    type_ = re.findall(f"{param}: ([\\w\\[\\]| ,]+)[,)]", line)[0]
-                                    current_class.methods[current_method.name].params[param].type_ = type_
-                                except IndexError:
-                                    pass
+                        for param in params:
+                            if param in ["int", "str", "tuple", "list", "dict", "float", "char"]:
+                                break
+                            current_class.methods[current_method.name].params[param] = Attr(param)
+                            try:
+                                type_ = re.findall(f"{param}: ([\\w\\[\\]| ,]+)[,)]", line)[0]
+                                current_class.methods[current_method.name].params[param].type_ = type_
+                            except IndexError:
+                                pass
 
-                            static = False
-                            prop = False
+                        static = False
+                        prop = False
                     elif "self." in line:
                         try:
                             attr = re.findall("self.([a-zA-Z0-9_]+)(?=[ =:]|$)", line)[0]
@@ -225,7 +204,7 @@ def parse_md_file(program):
                     properties = False
                 if line.startswith("`"):
                     try:
-                        name = re.findall("`([\\w_]+)`", line)[0]
+                        name = re.findall("`([\\w_]+)[(`]", line)[0]
                         if properties:
                             current_class.attrs[name] = Attr(name)
                         else:
@@ -237,34 +216,34 @@ def parse_md_file(program):
 
 
 def compare_files(program):
-    for file1 in program.files:
-        for file2 in program.files:
-            if program.files[file1].path == file2:
-                code = program.files[file1]
-                docs = program.files[file2]
+    for file in program.files:
+        if type(program.files[file]) is DocFile:
+            return
 
-                if type(code) is DocFile:
-                    continue
+        code = program.files[file]
+        docs = program.files[code.path]
 
-                classes_to_pop = []
+        classes_to_pop = []
 
-                for c in code.classes:
-                    if c not in docs.classes:
-                        print(c)
-                        classes_to_pop.append(c)
+        for c in code.classes:
+            if c not in docs.classes:
+                classes_to_pop.append(c)
 
-                for c in classes_to_pop:
-                    code.classes.pop(c)
+        for c in classes_to_pop:
+            code.classes.pop(c)
 
-                for c in code.classes:
-                    for attr in code.classes[c].attrs:
-                        if attr not in docs.classes[c].attrs:
-                            print(attr)
+        for c in code.classes:
+            for attr in code.classes[c].attrs:
+                if attr not in docs.classes[c].attrs:
+                    if code.classes[c].inherited_class is None:
+                        print(f"#DOC \x1b[1;31mmissing attr\x1b[0;39m [{c}.{attr}]")
+                    elif attr not in docs.classes[code.classes[c].inherited_class].attrs:
+                        print(f"#DOC \x1b[1;31mmissing attr\x1b[0;39m [{c}.{attr}]")
 
-                    for method in code.classes[c].methods:
-                        if method not in docs.classes[c].methods:
-                            print(method)
-
+            for method in code.classes[c].methods:
+                if method not in docs.classes[c].methods:
+                    if not code.classes[c].methods[method].prop:
+                        print(f"#DOC: missing method [{c}.{method}()]")
 
 def validate() -> None:
     path = os.getcwd()
@@ -272,9 +251,6 @@ def validate() -> None:
 
     code_files.pop(path)
     doc_files.pop(path)
-
-    check_files()
-    remove_inherited_traits()
 
     program = Program()
     parse_python_file(program)
