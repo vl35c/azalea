@@ -2,6 +2,7 @@ from settings import *
 from typing import Self
 from simulation.variance import Variance
 
+
 class Stock:
     def __init__(self, name: str, share_value: float, total_shares: int):
         self.name = name
@@ -56,6 +57,7 @@ class Stock:
 
 
 class ShareData:
+    # !ignore
     def __init__(self, open_v: float, close_v: float, high: float, low: float):
         self.open_v = open_v  # open_v is opening value
         self.close_v = close_v  # close_v is closing value

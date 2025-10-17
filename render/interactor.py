@@ -5,7 +5,7 @@ from render.font import Font
 
 class Interactor:
     def __init__(self, x: int, y: int, width: int, height: int, radius: int, text_color: str, bg_color: str,
-                 text:str = None, func = lambda: None):
+                 text: str = None, func=lambda: None):
         self.x = x
         self.y = y
         self.width = width
@@ -49,3 +49,8 @@ class Interactor:
     # render text on button
     def render(self) -> None:
         self.font.render(self.text, True, self.text_color, self._centered_text(self.text))
+
+    # draws and renders in 1 call
+    def display(self) -> None:
+        self.draw()
+        self.render()

@@ -58,21 +58,21 @@ class Graph:
 
         return int(position)
 
-    def draw(self, stock_data) -> None:
+    def draw(self, stock_data: object) -> None:
         self.renderer.hold(lambda: self.draw_base(), 0)
         self.hover(stock_data)
-        self.renderer.hold(lambda: self.draw_data(stock_data), 2)
         self.renderer.hold(lambda: self.draw_lines(stock_data), 1)
+        self.renderer.hold(lambda: self.draw_data(stock_data), 2)
 
         self.renderer.call()
 
     def draw_base(self) -> None:
         pygame.draw.rect(self.window, Color.WHITE, self.rect, 0, GRAPH_CORNER_ROUNDING)
 
-    def draw_data(self, stock_data) -> None:
+    def draw_data(self, stock_data: object) -> None:
         self.candle(stock_data)
 
-    def draw_lines(self, stock_data) -> None:
+    def draw_lines(self, stock_data: object) -> None:
         if stock_data.day == 0:
             return
 
@@ -87,22 +87,22 @@ class Graph:
         self.draw_line(middle, stock_data)
         self.draw_line(bottom_quarter, stock_data)
 
-    def draw_line(self, value: float, stock_data) -> None:
+    def draw_line(self, value: float, stock_data: object) -> None:
         y = self.map(
             stock_data.stock.bound.floor,
             stock_data.stock.bound.ceiling,
             GRAPH_HEIGHT + GRAPH_Y,
             GRAPH_Y,
-            int(value)
+            value
         )
 
         start = (GRAPH_X, y)
         end = (GRAPH_X + GRAPH_WIDTH, y)
 
         pygame.draw.line(self.window, Color.LIGHT_GREY, start, end)
-        self.font.render(str(value), True, Color.LIGHT_GREY, self.__add_tuples(start, (5, 0)))
+        self.font.render(str(value), True, Color.LIGHT_GREY, self.__add_tuples(start, (5, -20)))
 
-    def candle(self, stock_data) -> None:
+    def candle(self, stock_data: object) -> None:
         max_candles = int(GRAPH_WIDTH / CANDLE_SPACING)
         offset = stock_data.day - max_candles if stock_data.day > max_candles else 0
 
@@ -160,7 +160,7 @@ class Graph:
 
     # draws a background behind a candle to indicate which one is hovered
     # end position is -1 by default, signalling a single bar highlighted
-    def highlight_candle(self, start_position: int, end_position: int=-1) -> None:
+    def highlight_candle(self, start_position: int, end_position: int = -1) -> None:
         x = max(GRAPH_X + start_position * CANDLE_SPACING, GRAPH_X)
         y = GRAPH_Y
         height = GRAPH_HEIGHT
@@ -175,7 +175,7 @@ class Graph:
         rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.window, Color.LIGHT_GREY, rect, 0, GRAPH_CORNER_ROUNDING)
 
-    def __candle_data_calculate(self, stock_data, days: list[int]) -> None:
+    def __candle_data_calculate(self, stock_data: object, days: list[int]):
         days = [day + max(stock_data.day - GRAPH_WIDTH // CANDLE_SPACING, 0) for day in days]
         # filter days to only contain columns whose key values exist in stock_data
         days = list(set(
@@ -197,7 +197,7 @@ class Graph:
             return f'{min(days)+1}-{max(days)+1}', opening_price, closing_price, period_high, period_low
 
     # shows pricing data when hovering on candle
-    def candle_data(self, days: list[int], stock_data) -> None:
+    def candle_data(self, days: list[int], stock_data: object) -> None:
         day, opening_price, closing_price, period_high, period_low = self.__candle_data_calculate(stock_data, days)
 
         # calculate percentage change
@@ -221,7 +221,7 @@ class Graph:
         self.font.render(f"{'Low:':<6} ${period_low:.2f}  {low_percentage:.1f}%",
                          True, Color.WHITE, self.__add_tuples(origin, (4, 80)))
 
-    def hover(self, stock_data) -> None:
+    def hover(self, stock_data: object) -> None:
         # don't call hover if mouse is held
         if self.mouse_handler.obj is not None:
             return
@@ -241,7 +241,7 @@ class Graph:
         self.renderer.hold(lambda: self.candle_data([column], stock_data), 3)
 
     # handle graph functions when mouse is held on it
-    def handle_held(self, stock_data) -> None:
+    def handle_held(self, stock_data: object) -> None:
         if stock_data.day == 0:
             return
 

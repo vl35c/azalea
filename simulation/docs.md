@@ -43,7 +43,9 @@ StockList is a list of stocks
 `add_stock(self, name: str, share_value: float, total_shares: int)` - initialises a stock object and then adds it to the `stock_list`
 
 ---
-`load_stocks(self)` - loads in stocks from a pre-made csv file
+`load_stocks(self, filename: str)` - loads in stocks from a pre-made csv file\
+\
+`file_name` - name of the file to be loaded
 
 ---
 `select_names(self)` - returns a list of all stocks names
@@ -59,8 +61,11 @@ StockList is a list of stocks
 `user_input` - the string to be searched for
 
 ---
+`stock_names(self) -> list[str]` - returns a list of the name of the stocks
 
-# VARIANCE
+---
+
+# Variance
 
 Variance is a class which creates a pseudo-random fluctuation for simulating the stocks
 
