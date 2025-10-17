@@ -1,7 +1,7 @@
 import sys
 import pygame
 
-import doc_checker
+import parsnip
 
 from settings import *
 from simulation.stock import Stock
@@ -174,5 +174,5 @@ class Main:
 
 if __name__ == '__main__':
     main = Main()
-    doc_checker.validate()
+    parsnip.validate(sys.argv[1:])
     main.run()

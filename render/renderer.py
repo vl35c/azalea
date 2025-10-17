@@ -1,10 +1,13 @@
+from typing import Callable
+
+
 # renderer allows graphics to be rendered in any order regardless of where they were originally called
 class Renderer:
     def __init__(self):
         self.held_functions: list[HeldFunction] = []
 
     # add function to list
-    def hold(self, func, z: float):
+    def hold(self, func: Callable, z: float):
         self.held_functions.append(HeldFunction(func, z))
 
     # sort functions by z layer and then call all
@@ -19,6 +22,7 @@ class Renderer:
 
 
 class HeldFunction:
+    # !ignore
     def __init__(self, func, z: float):
         self.func = func
         self.z = z

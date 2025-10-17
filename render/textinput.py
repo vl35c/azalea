@@ -1,3 +1,4 @@
+# !ignore
 import pygame
 
 from typing import Callable
@@ -35,7 +36,7 @@ class TextInput(Interactor):
         self.active = False
         self.__buttons = []
 
-    def key_down(self, event) -> None:
+    def key_down(self, event: object) -> None:
         if event.key == pygame.K_BACKSPACE:
             self.remove_char()
         else:

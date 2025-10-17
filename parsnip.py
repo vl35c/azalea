@@ -99,6 +99,7 @@ class Class:
         self.inherited_class = inherited_class
         self.attrs = {}
         self.methods = {}
+        self.code = ""
 
 
 class Method:
@@ -111,9 +112,10 @@ class Method:
 
 
 class Attr:
-    def __init__(self, name: str, type_: str = None):
+    def __init__(self, name: str, type_: str = None, ignored: bool = False):
         self.name = name
         self.type_ = type_
+        self.ignored = ignored
 
 
 prop = False
@@ -121,12 +123,13 @@ static = False
 
 
 def parse_python_file(program):
-    current_class = Class("None")
-    current_method = Method("None")
     global prop, static
 
     for folder in code_files:
         for file_ in code_files[folder]:
+            current_class = Class("None")
+            current_method = Method("None")
+
             path = f"{folder}/{file_}"
 
             with open(path, "r") as file:
@@ -137,6 +140,10 @@ def parse_python_file(program):
                 for line in data.split("\n"):
                     line = line.strip()
 
+                    if current_method.name == "None":
+                        current_class.code += line + "\n"
+                    current_method.code += line + "\n"
+
                     if line.startswith("@property"):
                         prop = True
                     if line.startswith("@staticmethod"):
@@ -144,19 +151,20 @@ def parse_python_file(program):
                     if line.startswith("class"):
                         if inherited_class := re.findall("\\(([\\w_]+)\\)", line):
                             inherited_class = inherited_class[0]
+                        else:
+                            inherited_class = None
 
                         current_class = Class(re.findall("class ([a-zA-Z0-9_]+)", line)[0], inherited_class=inherited_class)
                         current_file.classes[current_class.name] = current_class
+                        current_method = Method("None")
                     if line.startswith("def"):
                         current_method_name = re.findall("def ([a-zA-Z0-9_]+)", line)[0]
-                        if current_method_name == "__init__":
-                            continue
                         current_method = Method(current_method_name, static_=static, prop_=prop)
                         current_class.methods[current_method.name] = current_method
 
                         params = re.findall(
                             "(?:[^:>] |\\()(\\w+)",
-                            line.split(current_method.name)[1]
+                            line.split(current_method.name)[1].split(")")[0]
                         )
 
                         for param in params:
@@ -164,21 +172,22 @@ def parse_python_file(program):
                                 break
                             current_class.methods[current_method.name].params[param] = Attr(param)
                             try:
-                                type_ = re.findall(f"{param}: ([\\w\\[\\]| ,]+)[,)]", line)[0]
+                                type_ = re.findall(f"{param}: ([\\w\\[\\]| ,]+)(?:[,)]| =)", line)[0]
                                 current_class.methods[current_method.name].params[param].type_ = type_
                             except IndexError:
                                 pass
 
                         static = False
                         prop = False
-                    elif "self." in line:
+                    if "self." in line:
                         try:
                             attr = re.findall("self.([a-zA-Z0-9_]+)(?=[ =:]|$)", line)[0]
+                            if "# !ignore" in line:
+                                current_class.attrs[attr] = Attr(attr, ignored=True)
                             current_class.attrs[attr] = Attr(attr)
                         except IndexError:
                             pass
 
-                    current_method.code += line + "\n"
             program.files[current_file.name] = current_file
 
 
@@ -209,13 +218,24 @@ def parse_md_file(program):
                             current_class.attrs[name] = Attr(name)
                         else:
                             current_class.methods[name] = Method(name)
+                            params = re.findall(
+                                "(?:[^:>] |\\()(\\w+)",
+                                line.split("-")[0]
+                            )
+                            if "self" in params:
+                                params.remove("self")
+
+                            for param in params:
+                                type_ = re.findall(f"{param}: ([\\w\\[\\]| ,]+)(?:[,)]| =)", line)[0]
+                                current_class.methods[name].params[param] = Attr(param, type_)
+
                     except IndexError:
                         pass
 
         program.files[current_file.path] = current_file
 
 
-def compare_files(program):
+def compare_files(program, args):
     for file in program.files:
         if type(program.files[file]) is DocFile:
             return
@@ -230,22 +250,55 @@ def compare_files(program):
                 classes_to_pop.append(c)
 
         for c in classes_to_pop:
+            if "-i" in args:
+                print(f"#parsnip: \x1b[1;31mmissing class   \x1b[0;39m [\x1b[2;34m{c}\x1b[0;39m]")
+            elif not "# !ignore" in code.classes[c].code:
+                print(f"#parsnip: \x1b[1;31mmissing class   \x1b[0;39m [\x1b[2;34m{c}\x1b[0;39m]")
             code.classes.pop(c)
 
         for c in code.classes:
+            if "# !ignore" in code.classes[c].code:
+                continue
+
             for attr in code.classes[c].attrs:
+                if code.classes[c].attrs[attr].ignored:
+                    continue
+
                 if attr not in docs.classes[c].attrs:
                     if code.classes[c].inherited_class is None:
-                        print(f"#DOC \x1b[1;31mmissing attr\x1b[0;39m [{c}.{attr}]")
+                        print(f"#parnsip: \x1b[1;31mmissing attr    \x1b[0;39m [\x1b[33m{c}\x1b[39m.\x1b[2;32m{attr}\x1b[0;39m]")
                     elif attr not in docs.classes[code.classes[c].inherited_class].attrs:
-                        print(f"#DOC \x1b[1;31mmissing attr\x1b[0;39m [{c}.{attr}]")
+                        print(f"#parsnip: \x1b[1;31mmissing attr    \x1b[0;39m [\x1b[33m{c}\x1b[39m.\x1b[2;32m{attr}\x1b[0;39m]")
 
             for method in code.classes[c].methods:
+                if code.classes[c].methods[method].name == "__init__":
+                    continue
+
                 if method not in docs.classes[c].methods:
                     if not code.classes[c].methods[method].prop:
-                        print(f"#DOC: missing method [{c}.{method}()]")
+                        if "# !ignore" in code.classes[c].methods[method].code and not "-i" in args:
+                            continue
+                        print(f"#parsnip: \x1b[1;31mmissing method  \x1b[0;39m [\x1b[33m{c}\x1b[39m.\x1b[2;32m{method}\x1b[0;39m()]")
+                else:
+                    if not code.classes[c].methods[method].prop:
+                        if "# !ignore" in code.classes[c].methods[method].code and not "-i" in args:
+                            continue
 
-def validate() -> None:
+                        for param in code.classes[c].methods[method].params:
+                            p = code.classes[c].methods[method].params[param].name
+                            type_ = code.classes[c].methods[method].params[param].type_
+                            if p == "self":
+                                continue
+                            if not p in docs.classes[c].methods[method].params:
+                                print(f"#parsnip: \x1b[1;31mmissing param   \x1b[0;39m [\x1b[2;35m{p}\x1b[0;39m] in [\x1b[33m{c}\x1b[39m.\x1b[32m{method}()\x1b[39m]")
+                            else:
+                                code_type = code.classes[c].methods[method].params[param].type_
+                                docs_type = docs.classes[c].methods[method].params[param].type_
+                                if code_type != docs_type:
+                                    print(f"#parsnip: \x1b[1;31mwrong param type \x1b[0;39m[\x1b[35m{p}\x1b[39m: \x1b[2;36m{docs_type}\x1b[0;39m] from [\x1b[33m{c}\x1b[39m.\x1b[32m{method}()\x1b[39m] should be [\x1b[35m{p}\x1b[39m: \x1b[36m{code_type}\x1b[39m]")
+
+
+def validate(*args) -> None:
     path = os.getcwd()
     check_folder(path)
 
@@ -255,4 +308,4 @@ def validate() -> None:
     program = Program()
     parse_python_file(program)
     parse_md_file(program)
-    compare_files(program)
+    compare_files(program, *args)

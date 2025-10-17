@@ -43,7 +43,9 @@ StockList is a list of stocks
 `add_stock(self, name: str, share_value: float, total_shares: int)` - initialises a stock object and then adds it to the `stock_list`
 
 ---
-`load_stocks(self)` - loads in stocks from a pre-made csv file
+`load_stocks(self, filename: str)` - loads in stocks from a pre-made csv file\
+\
+`file_name` - name of the file to be loaded
 
 ---
 `select_names(self)` - returns a list of all stocks names

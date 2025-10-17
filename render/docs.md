@@ -7,7 +7,7 @@ Font overrides pygame's own font class, extending its functionality to be able t
 `window` - the global window that the program uses
 
 ### METHODS:
-`render(self, text: str, antialias: bool, color: Color, str, tuple, pos: tuple[int, int]) -> pygame.Surface` - renders string onto the screen - overriding the builtin pygame font.render\
+`render(self, text: str, antialias: bool, color: Color | str | tuple, pos: tuple[int, int]) -> pygame.Surface` - renders string onto the screen - overriding the builtin pygame font.render\
 
 `str` - string passed into render to be displayed\
 `antialias` - should the string be antialiased\
@@ -49,7 +49,7 @@ A graph is a chart which allows users to be able to visualise stock data on a ca
 `bottom` - bottom coordinate on the graph
 
 ---
-`__candle_data_calculate(self, stock_data, days: list[int])` - calculates the pricing data (opening price, closing price, period high, and period low) for a non-zero list of days\
+`__candle_data_calculate(self, stock_data: object, days: list[int])` - calculates the pricing data (opening price, closing price, period high, and period low) for a non-zero list of days\
 \
 `stock_data` - contains data about stocks, and current day\
 `days` - list of the days for the data to be calculated over
@@ -67,18 +67,18 @@ A graph is a chart which allows users to be able to visualise stock data on a ca
 `x` - integer value to be converted
 
 ---
-`candle(self, stock_data)` - draws a candle on the graph\
+`candle(self, stock_data: object)` - draws a candle on the graph\
 \
 `stock_data` - contains data about stocks, and current day
 
 ---
-`candle_data(self, days: list[int], stock_data)` - fetches the candle data and then displays it on the screen\
+`candle_data(self, days: list[int], stock_data: object)` - fetches the candle data and then displays it on the screen\
 \
 `days` - list of days for the data to be calculated over\
 `stock_data` - contains data about stocks, and current day
 
 ---
-`draw(self, stock_data)` - calls the functions to draw the graph\
+`draw(self, stock_data: object)` - calls the functions to draw the graph\
 \
 `stock_data` - contains data about stocks, and current day
 
@@ -86,34 +86,34 @@ A graph is a chart which allows users to be able to visualise stock data on a ca
 `draw_base(self)` - draws the background of the graph
 
 ---
-`draw_data(self, stock_data)` - draws the candles on the graph\
+`draw_data(self, stock_data: object)` - draws the candles on the graph\
 \
 `stock_data` - contains data about stocks, and current day
 
 ---
-`draw_line(self, value: int, stock_data)` - draws single line from `draw_lines` function\
+`draw_line(self, value: float, stock_data: object)` - draws single line from `draw_lines` function\
 \
 `value` - value to be mapped and drawn onto the graph\
 `stock_data` - contains data about stocks, and current day
 
 ---
-`draw_lines(self, stock_data)` - draws pricing guidance lines on the graph\
+`draw_lines(self, stock_data: object)` - draws pricing guidance lines on the graph\
 \
 `stock_data` - contains data about stocks, and current day
 
 ---
-`handle_held(self, stock_data)` - called when the mouse is held on the graph, and calls functions to highlight and display pricing data for the selected period of time\
+`handle_held(self, stock_data: object)` - called when the mouse is held on the graph, and calls functions to highlight and display pricing data for the selected period of time\
 \
 `stock_data` - contains data about stocks, and current day
 
 ---
-`highlight_candle(self, start_position: int, end_position: int=-1)` - if end position is -1, highlights a single candle, otherwise highlights a range of candles\
+`highlight_candle(self, start_position: int, end_position: int = -1)` - if end position is -1, highlights a single candle, otherwise highlights a range of candles\
 \
 `start_position` - leftmost candle to highlight\
 `end_position` - rightmost candle to highlight
 
 ---
-`hover(self, stock_data)` - if the mouse hovers over a candle this function highlights and displays the data for that candle\
+`hover(self, stock_data: object)` - if the mouse hovers over a candle this function highlights and displays the data for that candle\
 \
 `stock_data` - contains data about stocks, and current day
 
@@ -153,6 +153,9 @@ An interactor is an input that the user is able to interact with.
 `text_object` - string to be centered
 
 ---
+`display(self)` - calls the draw and render function in 1 call
+
+---
 `draw(self)` - draws the interactor
 
 ---
@@ -177,7 +180,7 @@ The renderer is used to hold drawing functions that may not be called in the cor
 `flush(self)` - clears the list of held functions
 
 ---
-`hold(self, func, z: int)` - holds a function and a `z` layer - which is the order the function is to be called\
+`hold(self, func: Callable, z: float)` - holds a function and a `z` layer - which is the order the function is to be called\
 \
 `func` - the function to be called\
 `z` - layer to call function - lower means called first
@@ -209,9 +212,17 @@ TextInput allows the user to input text into a custom interactor
 `deactivate(self)` - sets the button's state to inactive and resets some other fields
 
 ---
-`handle_key_press(self, key) -> list[Button]` - takes in a pressed key and handles it\
+`get_buttons(self) -> list[Button]` - returns a list of all of the generated buttons
+
+---
+`handle_key_press(self, key: object) -> list[Button]` - takes in a pressed key and handles it\
 \
 `key` - either a pygame.K_BACKSPACE, or a character to be typed
+
+---
+`key_down(self, event: object)` - handles a key press event passed in by the KeyboardHandler\
+\
+`event` - the key down event object
 
 ---
 `on_type(self) -> list[Button]` - appends the users input to the text property and then calls the `on_inputlist_update` function 
@@ -221,6 +232,11 @@ TextInput allows the user to input text into a custom interactor
 
 ---
 `remove_char(self)` - removes a character from the text property
+
+---
+`set_keyboard_handler(self, keyboard: KeyboardHandler)` - sets the local keyboard handler for the class\
+\
+`keyboard` - the KeyboardHandler object to assign to the class
 
 ---
 

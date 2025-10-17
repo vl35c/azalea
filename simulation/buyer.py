@@ -1,8 +1,8 @@
-#!ignore
 from simulation.stock import Stock
 
 
 class Buyer:
+    # !ignore
     def __init__(self) -> None:
         self.stocks: list[Stock] = []
 
