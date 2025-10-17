@@ -2,6 +2,7 @@ import sys
 import pygame
 
 from settings import *
+from simulation.environment.events import Events
 from simulation.stock import Stock
 from simulation.stock_list import StockList
 from render.graph import Graph
@@ -37,6 +38,9 @@ class Main:
         self.day = 0
         self.stock_data = StockData(self.day, self.stock)
 
+        self.events = Events()
+        self.events.generate_random_events()
+
         # buttons
         self.buttons = [
             Button(20, 540, 60, 40, 8, Color.WHITE, Color.AQUAMARINE, text="tick",
@@ -59,6 +63,17 @@ class Main:
         self.font = Font()
 
     def tick(self) -> None:
+        try: todays_events = self.events.events[self.day]
+        except: todays_events = []
+
+        for i in range(24):
+            try: hour_events = todays_events[i]
+            except: hour_events = []
+            for event in hour_events:
+                event.update_stock_prices(self.stock_list)
+                print(event.description)
+
+
         for stock in self.stock_list.stock_list:
             for i in range(24):  # 24 ticks to update it 24 times in 1 day
                 change = stock.variance.iterate()  # iterate each stock's price
@@ -148,7 +163,19 @@ class Main:
                 f'{self.stock.name}: ${self.stock.share_value:.2f}',
                 True,
                 (255, 255, 255),
-                (100, 0)
+                (0, 20)
+            )
+            self.font.render(
+                f'Country: {self.stock.country}',
+                True,
+                (255, 255, 255),
+                (0, 40)
+            )
+            self.font.render(
+                f'Sector: {self.stock.sector}',
+                True,
+                (255, 255, 255),
+                (0, 60)
             )
 
             for button in self.buttons:
