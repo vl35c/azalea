@@ -5,7 +5,7 @@ Trello: https://trello.com/b/xeh7wbsH/stock-sim
 azalea is a stock market simulation
 \
 \
-by Lewis Vick, Kris McDade, Callum Lowden and Maximillian Conrathe
+by Lewis Vick, Kay McDade, Callum Lowden and Maximillian Conrathe
 
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠴⠛⠲⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⢀⡴⠋⠛⠯⣀⠠⡀⠘⣇⠀⣠⠦⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
